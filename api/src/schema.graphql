@@ -1,64 +1,52 @@
-type User {
-  userId: ID!
-  name: String
-  reviews: [Review] @relation(name: "WROTE", direction: "OUT")
-  avgStars: Float
-    @cypher(
-      statement: "MATCH (this)-[:WROTE]->(r:Review) RETURN toFloat(avg(r.stars))"
-    )
-  numReviews: Int
-    @cypher(statement: "MATCH (this)-[:WROTE]->(r:Review) RETURN COUNT(r)")
-  recommendations(first: Int = 3): [Business]
-    @cypher(
-      statement: "MATCH (this)-[:WROTE]->(r:Review)-[:REVIEWS]->(:Business)<-[:REVIEWS]-(:Review)<-[:WROTE]-(:User)-[:WROTE]->(:Review)-[:REVIEWS]->(rec:Business) WHERE NOT EXISTS( (this)-[:WROTE]->(:Review)-[:REVIEWS]->(rec) ) WITH rec, COUNT(*) AS num ORDER BY num DESC LIMIT $first RETURN rec"
-    )
+type Question {
+  identity: ID!
+  start: Boolean
+  context: String
+  space: String
+  hint: String
+  content: String
+  raw_content: String
+  source_ref: String
+  questions: [Question] @relation(name: "ANSWER", direction: "OUT")
+  solutions: [Solution] @relation(name: "ANSWER", direction: "OUT")
 }
 
-type Business {
-  businessId: ID!
-  name: String!
-  address: String
-  city: String
-  state: String
-  location: Point
-  avgStars: Float
-    @cypher(
-      statement: "MATCH (this)<-[:REVIEWS]-(r:Review) RETURN coalesce(avg(r.stars),0.0)"
-    )
-  reviews: [Review] @relation(name: "REVIEWS", direction: "IN")
-  categories: [Category] @relation(name: "IN_CATEGORY", direction: "OUT")
+type Solution {
+  identity: ID!
+  context: String
+  space: String
+  hint: String
+  content: String
+  raw_content: String
+  source_ref: String
+  parts: [String]
+  attachment_types: [String]
+  attachment_titles: [String]
+  attachment_paths: [String]
 }
 
-type Review {
-  reviewId: ID!
-  stars: Float
-  text: String
-  date: Date
-  business: Business @relation(name: "REVIEWS", direction: "OUT")
-  user: User @relation(name: "WROTE", direction: "IN")
-}
-
-type Category {
-  name: ID!
-  businesses: [Business] @relation(name: "IN_CATEGORY", direction: "IN")
-}
-
-type RatingCount {
-  stars: Float!
-  count: Int!
-}
-
+#MATCH (q:Question {identity: 0}) 
+#OPTIONAL MATCH (es:Solution {identity: 20}) 
+#OPTIONAL MATCH  (eq:Question {identity: 20}) 
+#MERGE (q)-[:ANSWER {source_ref: "8818987452753520504", raw_content: "Upright unit" ,value: "Upright unit",synonyms: ""}]->(es)
+#MERGE (q)-[:ANSWER {source_ref: "8818987452753520504", raw_content: "Upright unit" ,value: "Upright unit",synonyms: ""}]->(eq)
+#RETURN q,eq,es
 type Mutation {
-  mergeBusinessCategory(categories: [String!]!, businessId: ID!): Business
+  mergeQuestionAnswer(
+    identity: ID!
+    start: ID!
+    end: ID!
+    source_ref: String
+    raw_content: String
+    value: String
+    synonyms: String
+  ): Question
     @cypher(
-      statement: "MATCH (b:Business {businessId: $businessId}) UNWIND $categories AS cat MERGE (c:Category {name: cat}) MERGE (b)-[:IN_CATEGORY]->(c) RETURN b"
+      statement: "MATCH (q:Question {identity: $start}) MATCH (es:Solution {identity: $end}) MATCH  (eq:Question {identity: $end}) MERGE (q)-[:ANSWER {identity:$identity, source_ref: $source_ref, raw_content: $raw_content ,value: $value,synonyms: $synonyms}]->(es) MERGE (q)-[:ANSWER {identity:$identity, source_ref: $source_ref, raw_content: $raw_content ,value: $value,synonyms: $synonyms}]->(eq) RETURN q"
     )
 }
 
 type Query {
-  userCount: Int! @cypher(statement: "MATCH (u:User) RETURN COUNT(u)")
-  ratingsCount: [RatingCount]
-    @cypher(
-      statement: "MATCH (r:Review) WITH r.stars AS stars, COUNT(*) AS count ORDER BY stars RETURN {stars: stars, count: count}"
-    )
+  questionCount: Int! @cypher(statement: "MATCH (q:Question) RETURN COUNT(q)")
+  solutionCount: Int! @cypher(statement: "MATCH (s:Solution) RETURN COUNT(s)")
 }
