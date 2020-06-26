@@ -7,8 +7,8 @@ type Question {
   content: String
   raw_content: String
   source_ref: String
-  questions: [Question] @relation(name: "ANSWER", direction: "OUT")
-  solutions: [Solution] @relation(name: "ANSWER", direction: "OUT")
+  sub_questions:[SubQuestions]
+  solutions: [Answer]
 }
 
 type Solution {
@@ -25,9 +25,29 @@ type Solution {
   attachment_paths: [String]
 }
 
-#MATCH (q:Question {identity: 0}) 
-#OPTIONAL MATCH (es:Solution {identity: 20}) 
-#OPTIONAL MATCH  (eq:Question {identity: 20}) 
+type SubQuestions @relation(name: "ANSWER") {
+  identity: ID!
+  from: Question
+  to: Question
+  source_ref: String
+  raw_content: String
+  value: String
+  synonyms: String
+}
+
+type Answer @relation(name: "ANSWER") {
+  identity: ID!
+  from: Question
+  to: Solution
+  source_ref: String
+  raw_content: String
+  value: String
+  synonyms: String
+}
+
+#MATCH (q:Question {identity: 0})
+#OPTIONAL MATCH (es:Solution {identity: 20})
+#OPTIONAL MATCH  (eq:Question {identity: 20})
 #MERGE (q)-[:ANSWER {source_ref: "8818987452753520504", raw_content: "Upright unit" ,value: "Upright unit",synonyms: ""}]->(es)
 #MERGE (q)-[:ANSWER {source_ref: "8818987452753520504", raw_content: "Upright unit" ,value: "Upright unit",synonyms: ""}]->(eq)
 #RETURN q,eq,es
