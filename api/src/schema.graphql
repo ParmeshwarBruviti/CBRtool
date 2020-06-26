@@ -42,7 +42,7 @@ type Mutation {
     synonyms: String
   ): Question
     @cypher(
-      statement: "MATCH (q:Question {identity: $start}) MATCH (es:Solution {identity: $end}) MATCH  (eq:Question {identity: $end}) MERGE (q)-[:ANSWER {identity:$identity, source_ref: $source_ref, raw_content: $raw_content ,value: $value,synonyms: $synonyms}]->(es) MERGE (q)-[:ANSWER {identity:$identity, source_ref: $source_ref, raw_content: $raw_content ,value: $value,synonyms: $synonyms}]->(eq) RETURN q"
+      statement: "MATCH (q:Question {identity: $start}) OPTIONAL MATCH (es:Solution {identity: $end}) OPTIONAL MATCH  (eq:Question {identity: $end}) MERGE (q)-[:ANSWER {identity:$identity, source_ref: $source_ref, raw_content: $raw_content ,value: $value,synonyms: $synonyms}]->(es) MERGE (q)-[:ANSWER {identity:$identity, source_ref: $source_ref, raw_content: $raw_content ,value: $value,synonyms: $synonyms}]->(eq) RETURN q"
     )
 }
 
