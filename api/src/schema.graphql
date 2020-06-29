@@ -1,5 +1,5 @@
 type Question {
-  identity: ID!
+  questionId: ID!
   start: Boolean
   context: String
   space: String
@@ -12,7 +12,7 @@ type Question {
 }
 
 type Solution {
-  identity: ID!
+  solutionId: ID!
   context: String
   space: String
   hint: String
@@ -37,8 +37,8 @@ type SubQuestions @relation(name: "ANSWER") {
 
 type Answer @relation(name: "ANSWER") {
   identity: ID!
-  from: Question
-  to: Solution
+  start: Question
+  end: Solution
   source_ref: String
   raw_content: String
   value: String
@@ -62,7 +62,7 @@ type Mutation {
     synonyms: String
   ): Question
     @cypher(
-      statement: "MATCH (q:Question {identity: $start}) OPTIONAL MATCH (es:Solution {identity: $end}) OPTIONAL MATCH  (eq:Question {identity: $end}) MERGE (q)-[:ANSWER {identity:$identity, source_ref: $source_ref, raw_content: $raw_content ,value: $value,synonyms: $synonyms}]->(es) MERGE (q)-[:ANSWER {identity:$identity, source_ref: $source_ref, raw_content: $raw_content ,value: $value,synonyms: $synonyms}]->(eq) RETURN q"
+      statement: "MATCH (q:Question {questionId: $start}) OPTIONAL MATCH (es:Solution {solutionId: $end}) OPTIONAL MATCH  (eq:Question {questionId: $end}) MERGE (q)-[:ANSWER {identity:$identity, source_ref: $source_ref, raw_content: $raw_content ,value: $value,synonyms: $synonyms}]->(es) MERGE (q)-[:ANSWER {identity:$identity, source_ref: $source_ref, raw_content: $raw_content ,value: $value,synonyms: $synonyms}]->(eq) RETURN q"
     )
 }
 

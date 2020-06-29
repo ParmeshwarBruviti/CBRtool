@@ -31,6 +31,7 @@ const runMutations = async () => {
           variables,
         })
         .catch((e) => {
+          console.log('Exception ', e)
           throw new Error(e)
         })
     })

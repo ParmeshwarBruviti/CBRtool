@@ -31,5 +31,8 @@
       "prettier --write",
       "eslint --fix"
     ]
+  },
+  "dependencies": {
+    "run": "^1.4.0"
   }
 }
