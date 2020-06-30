@@ -2,14 +2,11 @@ import React from 'react'
 
 import { Switch, Route, BrowserRouter as Router } from 'react-router-dom'
 
-import UserList from './components/UserList'
-
 import clsx from 'clsx'
 import { makeStyles } from '@material-ui/core/styles'
 import {
   CssBaseline,
   Drawer,
-  Box,
   AppBar,
   Toolbar,
   List,
@@ -17,7 +14,6 @@ import {
   Divider,
   IconButton,
   Container,
-  Link as MUILink,
   ListItem,
   ListItemText,
   ListItemIcon,
@@ -26,23 +22,10 @@ import { Link } from 'react-router-dom'
 import {
   ChevronLeft as ChevronLeftIcon,
   Menu as MenuIcon,
-  Dashboard as DashboardIcon,
-  People as PeopleIcon,
+  AccountTree as TreeIcon,
 } from '@material-ui/icons'
-import Dashboard from './components/Dashboard'
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <MUILink color="inherit" href="https://grandstack.io/">
-        Your GRANDstack App Name Here
-      </MUILink>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  )
-}
+import Graph from './components/Graph/Graph'
 
 const drawerWidth = 240
 
@@ -176,7 +159,7 @@ export default function App() {
               noWrap
               className={classes.title}
             >
-              Welcome To GRANDstack App
+              Welcome To Authoring Tool
             </Typography>
           </Toolbar>
         </AppBar>
@@ -197,18 +180,9 @@ export default function App() {
             <Link to="/" className={classes.navLink}>
               <ListItem button>
                 <ListItemIcon>
-                  <DashboardIcon />
+                  <TreeIcon />
                 </ListItemIcon>
-                <ListItemText primary="Dashboard" />
-              </ListItem>
-            </Link>
-
-            <Link to="/users" className={classes.navLink}>
-              <ListItem button>
-                <ListItemIcon>
-                  <PeopleIcon />
-                </ListItemIcon>
-                <ListItemText primary="Users" />
+                <ListItemText primary="Tree" />
               </ListItem>
             </Link>
           </List>
@@ -218,14 +192,8 @@ export default function App() {
           <div className={classes.appBarSpacer} />
           <Container maxWidth="lg" className={classes.container}>
             <Switch>
-              <Route exact path="/" component={Dashboard} />
-              <Route exact path="/businesses" component={UserList} />
-              <Route exact path="/users" component={UserList} />
+              <Route exact path="/" component={Graph} />
             </Switch>
-
-            <Box pt={4}>
-              <Copyright />
-            </Box>
           </Container>
         </main>
       </div>
