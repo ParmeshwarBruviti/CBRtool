@@ -1,7 +1,7 @@
 import React from 'react'
 import { Grid } from '@material-ui/core'
 
-function Graph() {
+function TreeView() {
   return (
     <Grid container direction="row" justify="center" alignItems="center">
       <h2>Cytoscape Tree Render Here</h2>
@@ -9,4 +9,4 @@ function Graph() {
   )
 }
 
-export default Graph
+export default TreeView

@@ -2,6 +2,8 @@ import React from 'react'
 
 import { Switch, Route, BrowserRouter as Router } from 'react-router-dom'
 
+import routes from './routes'
+
 import clsx from 'clsx'
 import { makeStyles } from '@material-ui/core/styles'
 import {
@@ -22,10 +24,7 @@ import { Link } from 'react-router-dom'
 import {
   ChevronLeft as ChevronLeftIcon,
   Menu as MenuIcon,
-  AccountTree as TreeIcon,
 } from '@material-ui/icons'
-
-import Graph from './components/Graph/Graph'
 
 const drawerWidth = 240
 
@@ -177,14 +176,23 @@ export default function App() {
           </div>
           <Divider />
           <List>
-            <Link to="/" className={classes.navLink}>
-              <ListItem button>
-                <ListItemIcon>
-                  <TreeIcon />
-                </ListItemIcon>
-                <ListItemText primary="Tree" />
-              </ListItem>
-            </Link>
+            {routes.map((route, i) => {
+              const Icon = route.icon
+              return (
+                <Link
+                  to={route.path}
+                  className={classes.navLink}
+                  key={`menu-${i}`}
+                >
+                  <ListItem button>
+                    <ListItemIcon>
+                      <Icon />
+                    </ListItemIcon>
+                    <ListItemText primary={route.name} />
+                  </ListItem>
+                </Link>
+              )
+            })}
           </List>
           <Divider />
         </Drawer>
@@ -192,7 +200,9 @@ export default function App() {
           <div className={classes.appBarSpacer} />
           <Container maxWidth="lg" className={classes.container}>
             <Switch>
-              <Route exact path="/" component={Graph} />
+              {routes.map((route, i) => {
+                return <Route key={`route-${i}`} {...route} />
+              })}
             </Switch>
           </Container>
         </main>
