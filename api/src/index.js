@@ -71,6 +71,7 @@ init(driver)
 const server = new ApolloServer({
   context: { driver, neo4jDatabase: process.env.NEO4J_DATABASE },
   schema: schema,
+  connectToDevTools: true,
   introspection: true,
   playground: true,
   engine: {

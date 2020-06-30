@@ -1,95 +1,127 @@
-const fetch = require('node-fetch')
-const parse = require('csv-parse/lib/sync')
+// const fetch = require('node-fetch')
+// const parse = require('csv-parse/lib/sync')
 const gql = require('graphql-tag')
 
-export const getSeedMutations = async () => {
-  const res = await fetch(
-    'https://cdn.neo4jlabs.com/data/grandstack_businesses.csv'
-  )
-  const body = await res.text()
-  const records = parse(body, { columns: true })
-  const mutations = generateMutations(records)
+const {
+  db: { Question, Solution, Answer },
+} = require('./data')
 
-  return mutations
+export const getSeedMutations = () => {
+  const queMutaion = getQuestionsMutations(Question),
+    solMutaion = getSolutionsMutations(Solution),
+    ansMutation = getAnswersMutations(Answer)
+
+  return [...queMutaion, ...solMutaion, ...ansMutation]
 }
 
-const generateMutations = (records) => {
-  return records.map((rec) => {
-    Object.keys(rec).map((k) => {
-      if (k === 'latitude' || k === 'longitude' || k === 'reviewStars') {
-        rec[k] = parseFloat(rec[k])
-      } else if (k === 'reviewDate') {
-        const dateParts = rec[k].split('-')
-        rec['year'] = parseInt(dateParts[0])
-        rec['month'] = parseInt(dateParts[1])
-        rec['day'] = parseInt(dateParts[2])
-      } else if (k === 'categories') {
-        rec[k] = rec[k].split(',')
-      }
-    })
+const getAnswersMutations = (ansData) => {
+  return ansData.map((rec) => {
+    const params = {
+      identity: rec.identity,
+      start: rec.start,
+      end: rec.end,
+      source_ref: rec.data.source_ref,
+      raw_content: rec.data.raw_content,
+      value: rec.data.value,
+      synonyms: rec.data.synonyms,
+    }
 
     return {
       mutation: gql`
-        mutation mergeReviews(
-          $userId: ID!
-          $userName: String
-          $businessId: ID!
-          $businessName: String
-          $businessCity: String
-          $businessState: String
-          $businessAddress: String
-          $latitude: Float
-          $longitude: Float
-          $reviewId: ID!
-          $reviewText: String
-          $year: Int
-          $month: Int
-          $day: Int
-          $reviewStars: Float
-          $categories: [String!]!
+        mutation(
+          $identity: ID!
+          $start: ID!
+          $end: ID!
+          $source_ref: String
+          $raw_content: String
+          $value: String
+          $synonyms: String
         ) {
-          user: MergeUser(userId: $userId, name: $userName) {
-            userId
-          }
-          business: MergeBusiness(
-            businessId: $businessId
-            name: $businessName
-            address: $businessAddress
-            city: $businessCity
-            state: $businessState
-            location: { latitude: $latitude, longitude: $longitude }
+          mergeQuestionAnswer(
+            identity: $identity
+            start: $start
+            end: $end
+            source_ref: $source_ref
+            raw_content: $raw_content
+            value: $value
+            synonyms: $synonyms
           ) {
-            businessId
+            content
+            questionId
           }
-          review: MergeReview(
-            reviewId: $reviewId
-            text: $reviewText
-            date: { year: $year, month: $month, day: $day }
-            stars: $reviewStars
+        }
+      `,
+      variables: params,
+    }
+  })
+}
+
+const getSolutionsMutations = (solData) => {
+  return solData.map((rec) => {
+    return {
+      mutation: gql`
+        mutation(
+          $solutionId: ID!
+          $context: String
+          $space: String
+          $hint: String
+          $content: String
+          $raw_content: String
+          $source_ref: String
+          $parts: [String]
+          $attachment_types: [String]
+          $attachment_titles: [String]
+          $attachment_paths: [String]
+        ) {
+          MergeSolution(
+            solutionId: $solutionId
+            context: $context
+            space: $space
+            hint: $hint
+            content: $content
+            raw_content: $raw_content
+            source_ref: $source_ref
+            parts: $parts
+            attachment_types: $attachment_types
+            attachment_titles: $attachment_titles
+            attachment_paths: $attachment_paths
           ) {
-            reviewId
+            solutionId
+            _id
           }
-          reviewUser: MergeReviewUser(
-            from: { userId: $userId }
-            to: { reviewId: $reviewId }
+        }
+      `,
+      variables: rec,
+    }
+  })
+}
+
+const getQuestionsMutations = (queData) => {
+  return queData.map((rec) => {
+    if (!rec.start) rec.start = false
+    return {
+      mutation: gql`
+        mutation(
+          $questionId: ID!
+          $raw_content: String
+          $hint: String
+          $start: Boolean
+          $context: String
+          $source_ref: String
+          $space: String
+          $content: String
+        ) {
+          MergeQuestion(
+            questionId: $questionId
+            raw_content: $raw_content
+            hint: $hint
+            start: $start
+            context: $context
+            source_ref: $source_ref
+            space: $space
+            content: $content
           ) {
-            from {
-              userId
-            }
-          }
-          reviewBusiness: MergeReviewBusiness(
-            from: { reviewId: $reviewId }
-            to: { businessId: $businessId }
-          ) {
-            from {
-              reviewId
-            }
-          }
-          businessCategories: mergeBusinessCategory(
-            categories: $categories
-            businessId: $businessId
-          ) {
-            businessId
+            questionId
           }
         }
       `,
