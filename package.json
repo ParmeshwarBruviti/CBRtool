@@ -32,7 +32,5 @@
       "eslint --fix"
     ]
   },
-  "dependencies": {
-    "run": "^1.4.0"
-  }
+  "dependencies": {}
 }
