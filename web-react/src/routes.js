@@ -1,6 +1,6 @@
 import { AccountTree as TreeIcon } from '@material-ui/icons'
 
-import TreeView from './components/Tree/tree-view'
+import TreeView from './components/Tree/view'
 
 const routes = [
   {

@@ -90,11 +90,15 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     height: '100vh',
-    overflow: 'auto',
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
   },
   container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
+    padding: 0,
+    flex: 1,
+    display: 'flex',
+    overflow: 'hidden',
   },
   paper: {
     padding: theme.spacing(2),
@@ -110,14 +114,14 @@ const useStyles = makeStyles((theme) => ({
     color: 'inherit',
   },
   appBarImage: {
-    maxHeight: '75px',
+    maxHeight: '60px',
     paddingRight: '20px',
   },
 }))
 
 export default function App() {
   const classes = useStyles()
-  const [open, setOpen] = React.useState(true)
+  const [open, setOpen] = React.useState(false)
   const handleDrawerOpen = () => {
     setOpen(true)
   }

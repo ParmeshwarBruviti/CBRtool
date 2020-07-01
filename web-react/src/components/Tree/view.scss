@@ -1,0 +1,19 @@
+.tree-view {
+  display: flex;
+  flex: 1;
+  margin: ($default-margin - 5px);
+  overflow: hidden;
+  .panel {
+    padding: ($default-padding - 5px);
+    flex: 1;
+    border: 1px solid $border-color;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .view {
+    padding: ($default-padding - 5px);
+    flex: 3;
+    border: 1px solid $border-color;
+  }
+}
