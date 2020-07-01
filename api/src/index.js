@@ -22,12 +22,8 @@ const app = express()
 const schema = makeAugmentedSchema({
   typeDefs,
   config: {
-    query: {
-      exclude: ['RatingCount'],
-    },
-    mutation: {
-      exclude: ['RatingCount'],
-    },
+    query: {},
+    mutation: {},
   },
 })
 
@@ -77,6 +73,9 @@ const server = new ApolloServer({
   schema: schema,
   introspection: true,
   playground: true,
+  engine: {
+    experimental_schemaReporting: true,
+  },
 })
 
 // Specify host, port and path for GraphQL endpoint
