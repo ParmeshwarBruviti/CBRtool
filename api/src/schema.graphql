@@ -9,7 +9,8 @@ type Question {
   source_ref: String
   sub_questions:[Question] @cypher(statement: "MATCH (this)-[:ANSWER]->(sub_que:Question) RETURN sub_que")
   solutions: [Solution] @cypher(statement: "MATCH (this)-[:ANSWER]->(sol:Solution) RETURN sol")
-  edges:[Edge] 
+  solution_edges:[SolutionEdge] 
+  question_edges:[QuestionEdge] 
 }
 
 type Solution {
@@ -25,10 +26,20 @@ type Solution {
   attachment_titles: [String]
   attachment_paths: [String]
   quetions: [Question] @cypher(statement: "MATCH (this) <-[:ANSWER] -(que:Question) RETURN que")
-  edges:[Edge]
+  in_edges:[SolutionEdge]
 }
 
-type Edge @relation(name: "ANSWER") {
+type QuestionEdge @relation(name: "ANSWER") {
+  identity: ID!
+  from: Question
+  to: Question 
+  source_ref: String
+  raw_content: String
+  value: String
+  synonyms: String
+}
+
+type SolutionEdge @relation(name: "ANSWER") {
   identity: ID!
   from: Question
   to: Solution
