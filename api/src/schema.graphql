@@ -32,7 +32,7 @@ type Solution {
 type QuestionEdge @relation(name: "ANSWER") {
   identity: ID!
   from: Question
-  to: Question
+  to: Question 
   source_ref: String
   raw_content: String
   value: String
