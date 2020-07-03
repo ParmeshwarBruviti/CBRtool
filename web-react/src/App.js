@@ -2,14 +2,13 @@ import React from 'react'
 
 import { Switch, Route, BrowserRouter as Router } from 'react-router-dom'
 
-import UserList from './components/UserList'
+import routes from './routes'
 
 import clsx from 'clsx'
 import { makeStyles } from '@material-ui/core/styles'
 import {
   CssBaseline,
   Drawer,
-  Box,
   AppBar,
   Toolbar,
   List,
@@ -17,7 +16,6 @@ import {
   Divider,
   IconButton,
   Container,
-  Link as MUILink,
   ListItem,
   ListItemText,
   ListItemIcon,
@@ -26,23 +24,7 @@ import { Link } from 'react-router-dom'
 import {
   ChevronLeft as ChevronLeftIcon,
   Menu as MenuIcon,
-  Dashboard as DashboardIcon,
-  People as PeopleIcon,
 } from '@material-ui/icons'
-import Dashboard from './components/Dashboard'
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <MUILink color="inherit" href="https://grandstack.io/">
-        Your GRANDstack App Name Here
-      </MUILink>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  )
-}
 
 const drawerWidth = 240
 
@@ -108,11 +90,15 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     height: '100vh',
-    overflow: 'auto',
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
   },
   container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
+    padding: 0,
+    flex: 1,
+    display: 'flex',
+    overflow: 'hidden',
   },
   paper: {
     padding: theme.spacing(2),
@@ -128,14 +114,14 @@ const useStyles = makeStyles((theme) => ({
     color: 'inherit',
   },
   appBarImage: {
-    maxHeight: '75px',
+    maxHeight: '60px',
     paddingRight: '20px',
   },
 }))
 
 export default function App() {
   const classes = useStyles()
-  const [open, setOpen] = React.useState(true)
+  const [open, setOpen] = React.useState(false)
   const handleDrawerOpen = () => {
     setOpen(true)
   }
@@ -176,7 +162,7 @@ export default function App() {
               noWrap
               className={classes.title}
             >
-              Welcome To GRANDstack App
+              Welcome To Authoring Tool
             </Typography>
           </Toolbar>
         </AppBar>
@@ -194,23 +180,23 @@ export default function App() {
           </div>
           <Divider />
           <List>
-            <Link to="/" className={classes.navLink}>
-              <ListItem button>
-                <ListItemIcon>
-                  <DashboardIcon />
-                </ListItemIcon>
-                <ListItemText primary="Dashboard" />
-              </ListItem>
-            </Link>
-
-            <Link to="/users" className={classes.navLink}>
-              <ListItem button>
-                <ListItemIcon>
-                  <PeopleIcon />
-                </ListItemIcon>
-                <ListItemText primary="Users" />
-              </ListItem>
-            </Link>
+            {routes.map((route, i) => {
+              const Icon = route.icon
+              return (
+                <Link
+                  to={route.path}
+                  className={classes.navLink}
+                  key={`menu-${i}`}
+                >
+                  <ListItem button>
+                    <ListItemIcon>
+                      <Icon />
+                    </ListItemIcon>
+                    <ListItemText primary={route.name} />
+                  </ListItem>
+                </Link>
+              )
+            })}
           </List>
           <Divider />
         </Drawer>
@@ -218,14 +204,10 @@ export default function App() {
           <div className={classes.appBarSpacer} />
           <Container maxWidth="lg" className={classes.container}>
             <Switch>
-              <Route exact path="/" component={Dashboard} />
-              <Route exact path="/businesses" component={UserList} />
-              <Route exact path="/users" component={UserList} />
+              {routes.map((route, i) => {
+                return <Route key={`route-${i}`} {...route} />
+              })}
             </Switch>
-
-            <Box pt={4}>
-              <Copyright />
-            </Box>
           </Container>
         </main>
       </div>
