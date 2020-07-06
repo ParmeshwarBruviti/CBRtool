@@ -87,9 +87,8 @@ type Query {
   getSolutions(count:Int):[Solution] @cypher(statement: "MATCH (q:Question) WITH q LIMIT $count MATCH (q)-[:ANSWER]->(s:Solution) RETURN DISTINCT s ")
 
   getSolutionEdges(count:Int):[SolutionEdge] 
-    @cypher(statement: "MATCH (q:Question) q LIMIT $count MATCH (q)-[r:ANSWER]-> (s:Solution) return r ")
+    @cypher(statement: "MATCH (q:Question) q LIMIT $count MATCH (q)-[r:ANSWER]-> (s:Solution) return q,s,r ")
 
-  
 }
 
 
