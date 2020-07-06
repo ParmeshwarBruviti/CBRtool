@@ -1,3 +1,5 @@
+
+
 type Question {
   questionId: ID!
   start: Boolean
@@ -11,6 +13,7 @@ type Question {
   solutions: [Solution] @cypher(statement: "MATCH (this)-[:ANSWER]->(sol:Solution) RETURN sol")
   solution_edges:[SolutionEdge] 
   question_edges:[QuestionEdge] 
+
 }
 
 type Solution {
@@ -27,7 +30,10 @@ type Solution {
   attachment_paths: [String]
   quetions: [Question] @cypher(statement: "MATCH (this) <-[:ANSWER] -(que:Question) RETURN que")
   in_edges:[SolutionEdge]
+
 }
+
+
 
 type QuestionEdge @relation(name: "ANSWER") {
   identity: ID!
@@ -70,7 +76,20 @@ type Mutation {
     )
 }
 
+
 type Query {
   questionCount: Int! @cypher(statement: "MATCH (q:Question) RETURN COUNT(q)")
+
   solutionCount: Int! @cypher(statement: "MATCH (s:Solution) RETURN COUNT(s)")
+
+  getQuestions(count:Int):[Question] @cypher(statement: "MATCH (q:Question) RETURN q LIMIT $count") 
+
+  getSolutions(count:Int):[Solution] @cypher(statement: "MATCH (q:Question) WITH q LIMIT $count MATCH (q)-[:ANSWER]->(s:Solution) RETURN DISTINCT s ")
+
+  getSolutionEdges(count:Int):[SolutionEdge] 
+    @cypher(statement: "MATCH (q:Question) q LIMIT $count MATCH (q)-[r:ANSWER]-> (s:Solution) return r ")
+
+  
 }
+
+

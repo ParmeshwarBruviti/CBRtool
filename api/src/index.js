@@ -1,4 +1,5 @@
 import { typeDefs } from './graphql-schema'
+import { resolvers } from './resolvers'
 import { ApolloServer } from 'apollo-server-express'
 import express from 'express'
 import neo4j from 'neo4j-driver'
@@ -21,6 +22,7 @@ const app = express()
 
 const schema = makeAugmentedSchema({
   typeDefs,
+  resolvers,
   config: {
     query: {},
     mutation: {},
