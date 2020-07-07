@@ -1,3 +1,6 @@
+
+scalar JSON
+
 type Question {
   questionId: ID!
   start: Boolean
@@ -7,10 +10,10 @@ type Question {
   content: String
   raw_content: String
   source_ref: String
-  sub_questions:[Question] @cypher(statement: "MATCH (this)-[:ANSWER]->(sub_que:Question) RETURN sub_que")
-  solutions: [Solution] @cypher(statement: "MATCH (this)-[:ANSWER]->(sol:Solution) RETURN sol")
-  solution_edges:[SolutionEdge] 
-  question_edges:[QuestionEdge] 
+  solutions: [Solution]
+    @cypher(statement: "MATCH (this)-[:ANSWER]->(sol:Solution) RETURN sol")
+  solution_edges: [SolutionEdge]
+  question_edges: [QuestionEdge]
 }
 
 type Solution {
@@ -25,14 +28,12 @@ type Solution {
   attachment_types: [String]
   attachment_titles: [String]
   attachment_paths: [String]
-  quetions: [Question] @cypher(statement: "MATCH (this) <-[:ANSWER] -(que:Question) RETURN que")
-  in_edges:[SolutionEdge]
 }
 
 type QuestionEdge @relation(name: "ANSWER") {
   identity: ID!
   from: Question
-  to: Question 
+  to: Question
   source_ref: String
   raw_content: String
   value: String
@@ -48,6 +49,8 @@ type SolutionEdge @relation(name: "ANSWER") {
   value: String
   synonyms: String
 }
+
+
 
 #MATCH (q:Question {identity: 0})
 #OPTIONAL MATCH (es:Solution {identity: 20})
@@ -72,5 +75,8 @@ type Mutation {
 
 type Query {
   questionCount: Int! @cypher(statement: "MATCH (q:Question) RETURN COUNT(q)")
+
   solutionCount: Int! @cypher(statement: "MATCH (s:Solution) RETURN COUNT(s)")
+
+  getAllInOne(count:Int): JSON
 }
