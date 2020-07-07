@@ -180,23 +180,25 @@ export default function App() {
           </div>
           <Divider />
           <List>
-            {routes.map((route, i) => {
-              const Icon = route.icon
-              return (
-                <Link
-                  to={route.path}
-                  className={classes.navLink}
-                  key={`menu-${i}`}
-                >
-                  <ListItem button>
-                    <ListItemIcon>
-                      <Icon />
-                    </ListItemIcon>
-                    <ListItemText primary={route.name} />
-                  </ListItem>
-                </Link>
-              )
-            })}
+            {routes
+              .filter((route) => route.icon)
+              .map((route, i) => {
+                const Icon = route.icon
+                return (
+                  <Link
+                    to={route.path}
+                    className={classes.navLink}
+                    key={`menu-${i}`}
+                  >
+                    <ListItem button>
+                      <ListItemIcon>
+                        <Icon />
+                      </ListItemIcon>
+                      <ListItemText primary={route.name} />
+                    </ListItem>
+                  </Link>
+                )
+              })}
           </List>
           <Divider />
         </Drawer>
