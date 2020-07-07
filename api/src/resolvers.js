@@ -35,9 +35,12 @@ export const Utils = {
   getQuestions(object, params, context, info) {
     console.log(object, info)
     let session = context.driver.session()
-    let query = `
-    MATCH (q:Question) RETURN q LIMIT $count;`
-
+    let query
+    if (params.count == 0) {
+      query = `MATCH (q:Question) RETURN q ;`
+    } else {
+      query = `MATCH (q:Question) RETURN q LIMIT $count;`
+    }
     return session
       .run(query, params)
       .then(function (result) {
@@ -78,8 +81,15 @@ export const Utils = {
   getSolutions(object, params, context, info) {
     console.log(object, info)
     let session = context.driver.session()
-    let query = `
-        MATCH (q:Question) WITH q LIMIT $count MATCH (q)-[:ANSWER]->(s:Solution) RETURN DISTINCT s;`
+
+    let query
+    if (params.count == 0) {
+      query = `
+      MATCH (q:Question) WITH q MATCH (q)-[:ANSWER]->(s:Solution) RETURN DISTINCT s;`
+    } else {
+      query = `
+      MATCH (q:Question) WITH q LIMIT $count MATCH (q)-[:ANSWER]->(s:Solution) RETURN DISTINCT s;`
+    }
 
     return session
       .run(query, params)
@@ -122,8 +132,16 @@ export const Utils = {
    */
   getSolutionEdges(object, params, context, info) {
     console.log(object, info)
-    let query = `
-    MATCH (q:Question) WITH q LIMIT $count MATCH (q)-[r:ANSWER]-> (s:Solution) return q,s,r;`
+
+    let query
+    if (params.count == 0) {
+      query = `
+      MATCH (q:Question) WITH q MATCH (q)-[r:ANSWER]-> (s:Solution) return q,s,r;`
+    } else {
+      query = `
+      MATCH (q:Question) WITH q LIMIT $count MATCH (q)-[r:ANSWER]-> (s:Solution) return q,s,r;`
+    }
+
     console.log('in getSolutionEdges resolver')
 
     let session = context.driver.session()
@@ -198,8 +216,16 @@ export const Utils = {
    */
   getQuestionEdges(object, params, context, info) {
     console.log(object, info)
-    let query = `
-    MATCH (q1:Question) WITH q1 LIMIT $count MATCH (q1)-[r:ANSWER]-> (q2:Question) return q1,q2,r;`
+
+    let query
+    if (params.count == 0) {
+      query = `
+      MATCH (q1:Question) WITH q1 MATCH (q1)-[r:ANSWER]-> (q2:Question) return q1,q2,r;`
+    } else {
+      query = `
+      MATCH (q1:Question) WITH q1 LIMIT $count MATCH (q1)-[r:ANSWER]-> (q2:Question) return q1,q2,r;`
+    }
+
     console.log('in getQuestionEdges resolver')
 
     let session = context.driver.session()
