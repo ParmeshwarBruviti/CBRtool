@@ -78,5 +78,5 @@ type Query {
 
   solutionCount: Int! @cypher(statement: "MATCH (s:Solution) RETURN COUNT(s)")
 
-  getAllInOne(count:Int = 0): JSON
+  getAllInOne(count:Int): JSON
 }

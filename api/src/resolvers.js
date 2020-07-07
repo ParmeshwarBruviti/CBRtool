@@ -36,7 +36,7 @@ export const Utils = {
     console.log(object, info)
     let session = context.driver.session()
     let query
-    if (params.count == 0) {
+    if (!params.count) {
       query = `MATCH (q:Question) RETURN q ;`
     } else {
       query = `MATCH (q:Question) RETURN q LIMIT $count;`
@@ -83,7 +83,7 @@ export const Utils = {
     let session = context.driver.session()
 
     let query
-    if (params.count == 0) {
+    if (!params.count) {
       query = `
       MATCH (q:Question) WITH q MATCH (q)-[:ANSWER]->(s:Solution) RETURN DISTINCT s;`
     } else {
@@ -134,7 +134,7 @@ export const Utils = {
     console.log(object, info)
 
     let query
-    if (params.count == 0) {
+    if (!params.count) {
       query = `
       MATCH (q:Question) WITH q MATCH (q)-[r:ANSWER]-> (s:Solution) return q,s,r;`
     } else {
@@ -218,7 +218,7 @@ export const Utils = {
     console.log(object, info)
 
     let query
-    if (params.count == 0) {
+    if (!params.count) {
       query = `
       MATCH (q1:Question) WITH q1 MATCH (q1)-[r:ANSWER]-> (q2:Question) return q1,q2,r;`
     } else {
