@@ -24,7 +24,9 @@ const schema = makeAugmentedSchema({
   typeDefs,
   resolvers,
   config: {
-    query: {},
+    query: {
+      exclude: ['getQuestions'],
+    },
     mutation: {},
   },
 })

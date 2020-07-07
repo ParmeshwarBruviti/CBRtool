@@ -1,27 +1,5 @@
 export const resolvers = {
   Query: {
-    async getQuestions(object, params, context, info) {
-      return await Utils.getQuestions(object, params, context, info)
-    },
-
-    async getSolutions(object, params, context, info) {
-      return await Utils.getSolutions(object, params, context, info)
-    },
-
-    /***
-     * to fetch edges between Question and solutions for given question count
-     */
-    async getSolutionEdges(object, params, context, info) {
-      return await Utils.getSolutionEdges(object, params, context, info)
-    },
-
-    /***
-     * to fetch edges between Question and solutions for given question count
-     */
-    async getQuestionEdges(object, params, context, info) {
-      return await Utils.getQuestionEdges(object, params, context, info)
-    },
-
     /***
      * Get Questions with thier solutions and edges between them of provided count
      */
