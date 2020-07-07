@@ -4,14 +4,11 @@ import CytoscapeComponent from 'react-cytoscapejs'
 
 import style from './style'
 
-import { nodes, edges } from './sample-data'
-
 function Graph(props) {
   const [coreCy, setCoreCy] = useState(null)
 
   useEffect(() => {
     const cy = coreCy
-    console.log(coreCy)
     if (cy) {
       cy.on('click', 'node', (e) => {
         const node = e.target.id()
@@ -26,7 +23,7 @@ function Graph(props) {
     roots: '#6',
   }
 
-  const data = [...nodes, ...edges]
+  const data = [...props.nodes, ...props.edges]
 
   return (
     <CytoscapeComponent

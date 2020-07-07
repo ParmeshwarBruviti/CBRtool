@@ -1,12 +1,15 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+
+import { Switch, Route, useHistory, useRouteMatch } from 'react-router-dom'
+
 import Graph from './Graph/Graph'
+import getRoutes from './routes'
 
 import { SwipeableDrawer, IconButton, Menu, MenuItem } from '@material-ui/core'
 
-import {
-  AddCircleOutline as AddIcon,
-  Cancel as CancelIcon,
-} from '@material-ui/icons'
+import { AddCircleOutline as AddIcon } from '@material-ui/icons'
+
+import { nodes, edges } from './Graph/sample-data'
 
 const options = ['Add Node', 'Add Edge']
 
@@ -35,6 +38,7 @@ function SubMenu(props) {
         aria-label="more"
         aria-controls="long-menu"
         aria-haspopup="true"
+        size="medium"
         onClick={handleClick}
       >
         <AddIcon />
@@ -68,7 +72,25 @@ function SubMenu(props) {
 }
 
 function TreeView() {
+  const history = useHistory()
+  const { url } = useRouteMatch()
+  const [routes, setRoutes] = useState([])
   const [isDrawerOpen, setDrwaerState] = React.useState(false)
+
+  useEffect(() => {
+    let routess = getRoutes(url)
+    setRoutes(routess)
+  }, [url])
+
+  history.listen((location) => {
+    const { state, pathname } = location
+    if (pathname === '/tree') {
+      // track root route listen
+      if (state !== undefined && state.isDrawerOpen !== undefined) {
+        setDrwaerState(state.isDrawerOpen)
+      }
+    }
+  })
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -80,39 +102,43 @@ function TreeView() {
     }
 
     setDrwaerState(open)
+
+    if (!open) {
+      history.push('/tree')
+    }
   }
 
   const selectedMenu = (open, type) => {
-    console.log('Type : ', type)
     setDrwaerState(open)
+    if (type === 'Add Node') {
+      history.push('/tree/add-node', {
+        start: !(nodes.length || 0),
+      })
+    } else if (type === 'Add Edge') {
+      history.push('/tree/add-edge')
+    }
   }
 
   return (
     <div className="tree-view">
       <div className="view">
         <SubMenu className="menu" selectedMenu={selectedMenu} />
-        <Graph className="right-panel" />
+        <Graph className="right-panel" nodes={nodes} edges={edges} />
       </div>
       <SwipeableDrawer
         anchor="right"
         open={isDrawerOpen}
-        onClose={toggleDrawer(false)}
+        onClose={() => {
+          // toggleDrawer(false)
+        }}
         onOpen={toggleDrawer(true)}
       >
         <div className="drawer">
-          <div className="title">
-            <h1>Node Details</h1>
-            <IconButton
-              aria-label="more"
-              aria-controls="long-menu"
-              aria-haspopup="true"
-              onClick={() => {
-                setDrwaerState(false)
-              }}
-            >
-              <CancelIcon />
-            </IconButton>
-          </div>
+          <Switch>
+            {routes.map((route, i) => {
+              return <Route key={`route-${i}`} {...route} />
+            })}
+          </Switch>
         </div>
       </SwipeableDrawer>
     </div>

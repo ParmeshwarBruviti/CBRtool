@@ -26,13 +26,47 @@
 }
 
 .drawer {
-  min-width: 350px;
-  .title {
-    display: flex;
-    align-items: center;
-    h1 {
-      flex: 1;
-      margin: ($default-margin - 5px);
+  min-width: 300px;
+  .drawer-container {
+    padding: ($default-padding - 5px);
+    .drawer-header {
+      .title {
+        display: flex;
+        align-items: center;
+        padding: 0 0 $default-padding;
+        margin: ($default-margin - 3px) ($default-margin - 5px);
+        border-bottom: 1px solid $border-color;
+        span {
+          flex: 1;
+          font-size: $default-font-size + 0.3em;
+          text-transform: uppercase;
+        }
+      }
+    }
+    .drawer-content {
+      margin: ($default-margin - 5px) $default-margin;
+      .form {
+        display: flex;
+        flex-direction: column;
+        .row {
+          display: flex;
+          flex-direction: column;
+          margin: ($default-margin - 5px) 0;
+          label {
+            font-size: ($default-font-size - 0.1em);
+          }
+          input[type="text"],
+          select {
+            background: #fff;
+            padding: ($default-padding - 5px);
+            border: 1px solid $border-color;
+            border-radius: 5px;
+          }
+        }
+      }
+    }
+    .drawer-footer {
+      margin: ($default-margin + 5px) ($default-margin - 5px);
     }
   }
 }
