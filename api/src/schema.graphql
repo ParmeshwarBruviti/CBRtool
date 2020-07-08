@@ -30,6 +30,16 @@ type Solution {
   attachment_paths: [String]
 }
 
+type Edge @relation(name: "ANSWER"){
+  identity: ID!
+  start: ID!
+  end: ID!
+  source_ref: String
+  raw_content: String
+  value: String
+  synonyms: String
+}
+
 type QuestionEdge @relation(name: "ANSWER") {
   identity: ID!
   from: Question
@@ -52,9 +62,9 @@ type SolutionEdge @relation(name: "ANSWER") {
 
 
 
-#MATCH (q:Question {identity: 0})
-#OPTIONAL MATCH (es:Solution {identity: 20})
-#OPTIONAL MATCH  (eq:Question {identity: 20})
+#MATCH (q:Question {questionId: 0})
+#OPTIONAL MATCH (es:Solution {solutionId: 20})
+#OPTIONAL MATCH  (eq:Question {questionId: 20})
 #MERGE (q)-[:ANSWER {source_ref: "8818987452753520504", raw_content: "Upright unit" ,value: "Upright unit",synonyms: ""}]->(es)
 #MERGE (q)-[:ANSWER {source_ref: "8818987452753520504", raw_content: "Upright unit" ,value: "Upright unit",synonyms: ""}]->(eq)
 #RETURN q,eq,es
@@ -71,6 +81,8 @@ type Mutation {
     @cypher(
       statement: "MATCH (q:Question {questionId: $start}) OPTIONAL MATCH (es:Solution {solutionId: $end}) OPTIONAL MATCH  (eq:Question {questionId: $end}) MERGE (q)-[:ANSWER {identity:$identity, source_ref: $source_ref, raw_content: $raw_content ,value: $value,synonyms: $synonyms}]->(es) MERGE (q)-[:ANSWER {identity:$identity, source_ref: $source_ref, raw_content: $raw_content ,value: $value,synonyms: $synonyms}]->(eq) RETURN q"
     )
+
+    
 }
 
 type Query {
@@ -79,4 +91,8 @@ type Query {
   solutionCount: Int! @cypher(statement: "MATCH (s:Solution) RETURN COUNT(s)")
 
   getAllInOne(count:Int): JSON
+
+  getQuestionEdgesOf(questionId:ID!):[QuestionEdge]  
+
+  getSolutionEdgesOf(questionId:ID!):[SolutionEdge] 
 }

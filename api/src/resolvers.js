@@ -25,6 +25,20 @@ export const resolvers = {
       console.log(resultJson)
       return resultJson
     },
+
+    /***
+     * Get all question edges of provided questionId
+     */
+    async getQuestionEdgesOf(object, params, context, info) {
+      return await Utils.getQuestionEdges(object, params, context, info)
+    },
+
+    /***
+     * Get all solution edges of provided questionId
+     */
+    async getSolutionEdgesOf(object, params, context, info) {
+      return await Utils.getSolutionEdges(object, params, context, info)
+    },
   },
 }
 
@@ -134,12 +148,16 @@ export const Utils = {
     console.log(object, info)
 
     let query
-    if (!params.count) {
-      query = `
+    if (!params.questionId) {
+      if (!params.count) {
+        query = `
       MATCH (q:Question) WITH q MATCH (q)-[r:ANSWER]-> (s:Solution) return q,s,r;`
-    } else {
-      query = `
+      } else {
+        query = `
       MATCH (q:Question) WITH q LIMIT $count MATCH (q)-[r:ANSWER]-> (s:Solution) return q,s,r;`
+      }
+    } else {
+      query = `MATCH (q:Question {questionId:$questionId}) MATCH (q)-[r:ANSWER]-> (s:Solution) return q,s,r;`
     }
 
     console.log('in getSolutionEdges resolver')
@@ -218,12 +236,17 @@ export const Utils = {
     console.log(object, info)
 
     let query
-    if (!params.count) {
-      query = `
+    if (!params.questionId) {
+      if (!params.count) {
+        query = `
       MATCH (q1:Question) WITH q1 MATCH (q1)-[r:ANSWER]-> (q2:Question) return q1,q2,r;`
+      } else {
+        query = `
+      MATCH (q1:Question) WITH q1 LIMIT $count MATCH (q1)-[r:ANSWER]-> (q2:Question) return q1,q2,r;`
+      }
     } else {
       query = `
-      MATCH (q1:Question) WITH q1 LIMIT $count MATCH (q1)-[r:ANSWER]-> (q2:Question) return q1,q2,r;`
+      MATCH (q1:Question {questionId:$questionId}) WITH q1 MATCH (q1)-[r:ANSWER]-> (q2:Question) return q1,q2,r;`
     }
 
     console.log('in getQuestionEdges resolver')

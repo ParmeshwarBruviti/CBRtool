@@ -245,19 +245,19 @@ const getAnswerMutations = (answers) => {
             identity
           }
 
-          mergeSolutionIn_edges: MergeSolutionIn_edges(
-            data: {
-              identity: $identity
-              source_ref: $source_ref
-              raw_content: $raw_content
-              value: $value
-              synonyms: $synonyms
-            }
-            to: { solutionId: $end }
-            from: { questionId: $start }
-          ) {
-            identity
-          }
+          # mergeSolutionIn_edges: MergeSolutionIn_edges(
+          #   data: {
+          #     identity: $identity
+          #     source_ref: $source_ref
+          #     raw_content: $raw_content
+          #     value: $value
+          #     synonyms: $synonyms
+          #   }
+          #   to: { solutionId: $end }
+          #   from: { questionId: $start }
+          # ) {
+          #   identity
+          # }
         }
       `,
       variables: vars,
