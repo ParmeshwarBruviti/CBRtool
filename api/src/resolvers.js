@@ -29,15 +29,35 @@ export const resolvers = {
     /***
      * Get all question edges of provided questionId
      */
-    async getQuestionEdgesOf(object, params, context, info) {
+    async getQuestionEdgesOfQuestion(object, params, context, info) {
       return await Utils.getQuestionEdges(object, params, context, info)
     },
 
     /***
      * Get all solution edges of provided questionId
      */
-    async getSolutionEdgesOf(object, params, context, info) {
+    async getSolutionEdgesOfQuestion(object, params, context, info) {
       return await Utils.getSolutionEdges(object, params, context, info)
+    },
+
+    /***
+     * to get all edges of question privided questionId
+     */
+    async getEdgesOfQuestion(object, params, context, info) {
+      return await Utils.getAllEdgesOf(object, params, context, info)
+    },
+
+    /***
+     * to get all edges of question privided questionId
+     */
+    async getEdgesOfSolution(object, params, context, info) {
+      return await Utils.getAllEdgesOf(object, params, context, info)
+    },
+    /***
+     * to get all edges of question privided questionId
+     */
+    async getEdges(object, params, context, info) {
+      return await Utils.getAllEdgesOf(object, params, context, info)
     },
   },
 }
@@ -302,6 +322,64 @@ export const Utils = {
             synonyms: prop.synonyms,
             from: question1,
             to: question2,
+          }
+
+          questionEdges.push(edge)
+        })
+        return questionEdges
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+      .finally(() => {
+        session.close()
+      })
+  },
+
+  /***
+   * getAllEdgesOFQuestion - for particular question
+   * getAllEdgesOfSolution - for particular solution
+   * getEdges - all edges with count
+   */
+  getAllEdgesOf(object, params, context, info) {
+    console.log(object, info)
+
+    let query
+    if (params.questionId) {
+      query = `MATCH (q:Question {questionId:$questionId}) WITH q MATCH (q)-[r:ANSWER]-() return r;`
+    } else if (params.solutionId) {
+      query = `MATCH (s:Solution {solutionId:$solutionId}) WITH s MATCH (s)-[r:ANSWER]-() return r;`
+    } else if (params.count && params.count > 0) {
+      query = `MATCH ()-[r:ANSWER]-() return r LIMIT $count;`
+    } else {
+      query = `MATCH ()-[r:ANSWER]-() return r;`
+    }
+
+    console.log('in getAllEdges resolver')
+
+    let session = context.driver.session()
+
+    return session
+      .run(query, params)
+      .then(function (result) {
+        let questionEdges = []
+        if (result.records.length < 1) {
+          console.log('records not found')
+          return null
+        }
+
+        result.records.map((record) => {
+          let edgeProp = record._fields[0].properties
+          console.log('Edges - ', edgeProp)
+
+          let edge = {
+            identity: edgeProp.identity,
+            source_ref: edgeProp.source_ref,
+            raw_content: edgeProp.raw_content,
+            value: edgeProp.value,
+            synonyms: edgeProp.synonyms,
+            start: edgeProp.start,
+            end: edgeProp.end,
           }
 
           questionEdges.push(edge)

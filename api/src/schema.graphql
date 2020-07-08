@@ -41,9 +41,11 @@ type Edge @relation(name: "ANSWER"){
 }
 
 type QuestionEdge @relation(name: "ANSWER") {
-  identity: ID!
   from: Question
   to: Question
+  identity: ID!
+  start: ID
+  end: ID
   source_ref: String
   raw_content: String
   value: String
@@ -51,9 +53,11 @@ type QuestionEdge @relation(name: "ANSWER") {
 }
 
 type SolutionEdge @relation(name: "ANSWER") {
-  identity: ID!
   from: Question
   to: Solution
+  identity: ID!
+  start: ID
+  end: ID
   source_ref: String
   raw_content: String
   value: String
@@ -79,7 +83,7 @@ type Mutation {
     synonyms: String
   ): Question
     @cypher(
-      statement: "MATCH (q:Question {questionId: $start}) OPTIONAL MATCH (es:Solution {solutionId: $end}) OPTIONAL MATCH  (eq:Question {questionId: $end}) MERGE (q)-[:ANSWER {identity:$identity, source_ref: $source_ref, raw_content: $raw_content ,value: $value,synonyms: $synonyms}]->(es) MERGE (q)-[:ANSWER {identity:$identity, source_ref: $source_ref, raw_content: $raw_content ,value: $value,synonyms: $synonyms}]->(eq) RETURN q"
+      statement: "MATCH (q:Question {questionId: $start}) OPTIONAL MATCH (es:Solution {solutionId: $end}) OPTIONAL MATCH  (eq:Question {questionId: $end}) MERGE (q)-[:ANSWER {identity:$identity, source_ref: $source_ref, raw_content: $raw_content ,value: $value,synonyms: $synonyms,start:$start,end:$end}]->(es) MERGE (q)-[:ANSWER {identity:$identity, source_ref: $source_ref, raw_content: $raw_content ,value: $value,synonyms: $synonyms,start:$start,end:$end}]->(eq) RETURN q"
     )
 
     
@@ -90,9 +94,17 @@ type Query {
 
   solutionCount: Int! @cypher(statement: "MATCH (s:Solution) RETURN COUNT(s)")
 
+  edgeCount:Int! @cypher(statement:"MATCH ()-[r:ANSWER]->() RETURN COUNT(r) ")
+
   getAllInOne(count:Int): JSON
 
-  getQuestionEdgesOf(questionId:ID!):[QuestionEdge]  
+  getQuestionEdgesOfQuestion(questionId:ID!):[QuestionEdge]  
 
-  getSolutionEdgesOf(questionId:ID!):[SolutionEdge] 
+  getSolutionEdgesOfQuestion(questionId:ID!):[SolutionEdge] 
+
+  getEdgesOfQuestion(questionId:ID!):[Edge]
+
+  getEdgesOfSolution(solutionId:ID!):[Edge]
+
+  getEdges(count:Int):[Edge]
 }

@@ -224,6 +224,8 @@ const getAnswerMutations = (answers) => {
               raw_content: $raw_content
               value: $value
               synonyms: $synonyms
+              start: $start
+              end: $end
             }
             to: { solutionId: $end }
             from: { questionId: $start }
@@ -238,6 +240,8 @@ const getAnswerMutations = (answers) => {
               raw_content: $raw_content
               value: $value
               synonyms: $synonyms
+              start: $start
+              end: $end
             }
             to: { questionId: $end }
             from: { questionId: $start }
