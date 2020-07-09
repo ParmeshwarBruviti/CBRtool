@@ -112,7 +112,7 @@ export const Utils = {
     if (!params.count) {
       query = `MATCH (q:Question) RETURN q ;`
     } else {
-      query = `MATCH (q:Question) RETURN q LIMIT $count;`
+      query = `MATCH (q:Question) WITH q ORDER BY toInteger(q.questionId) ASC return q LIMIT $count;`
     }
     return session
       .run(query, params)
@@ -158,10 +158,10 @@ export const Utils = {
     let query
     if (!params.count) {
       query = `
-      MATCH (q:Question) WITH q MATCH (q)-[:ANSWER]->(s:Solution) RETURN DISTINCT s;`
+      MATCH (s:Solution) RETURN s;`
     } else {
       query = `
-      MATCH (q:Question) WITH q LIMIT $count MATCH (q)-[:ANSWER]->(s:Solution) RETURN DISTINCT s;`
+       MATCH (q:Question) WITH q ORDER BY toInteger(q.questionId) ASC LIMIT $count MATCH (q)-[:ANSWER]->(s:Solution) RETURN DISTINCT s;`
     }
 
     return session
@@ -213,7 +213,7 @@ export const Utils = {
       MATCH (q:Question) WITH q MATCH (q)-[r:ANSWER]-> (s:Solution) return q,s,r;`
       } else {
         query = `
-      MATCH (q:Question) WITH q LIMIT $count MATCH (q)-[r:ANSWER]-> (s:Solution) return q,s,r;`
+        MATCH (q:Question) WITH q ORDER BY toInteger(q.questionId) ASC LIMIT $count  MATCH (q)-[r:ANSWER]-> (s:Solution) return q,s,r;`
       }
     } else {
       query = `MATCH (q:Question {questionId:$questionId}) MATCH (q)-[r:ANSWER]-> (s:Solution) return q,s,r;`
@@ -303,7 +303,7 @@ export const Utils = {
       MATCH (q1:Question) WITH q1 MATCH (q1)-[r:ANSWER]-> (q2:Question) return q1,q2,r;`
       } else {
         query = `
-      MATCH (q1:Question) WITH q1 LIMIT $count MATCH (q1)-[r:ANSWER]-> (q2:Question) return q1,q2,r;`
+        MATCH (q2:Question)<-[r:ANSWER]-(q1:Question) WITH q1,q2,r ORDER BY toInteger(q2.questionId) ASC LIMIT $count-1 RETURN q1,q2,r`
       }
     } else {
       query = `

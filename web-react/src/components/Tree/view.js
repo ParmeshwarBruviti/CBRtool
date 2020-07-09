@@ -174,8 +174,8 @@ function TreeView() {
       ...(questionEdges
         ? questionEdges.map((qe) => {
             const data = {
-              id: qe.identity,
-              name: qe.identity,
+              id: qe.answerId,
+              name: qe.answerId,
               type: 'QuestionEdge',
               // weight: 1,
               source: qe.from.questionId,
