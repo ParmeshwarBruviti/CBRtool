@@ -21,9 +21,12 @@ function Graph(props) {
   const layout = {
     name: 'breadthfirst',
     roots: `#${props.startNodeId}`,
+
   }
 
   const data = [...props.nodes, ...props.edges]
+
+  console.log('Graph Data: ', data)
 
   return (
     <CytoscapeComponent
