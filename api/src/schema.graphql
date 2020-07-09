@@ -31,7 +31,7 @@ type Solution {
 }
 
 type Edge @relation(name: "ANSWER"){
-  identity: ID!
+  answerId: ID!
   start: ID!
   end: ID!
   source_ref: String
@@ -43,7 +43,7 @@ type Edge @relation(name: "ANSWER"){
 type QuestionEdge @relation(name: "ANSWER") {
   from: Question
   to: Question
-  identity: ID!
+  answerId: ID!
   start: ID
   end: ID
   source_ref: String
@@ -55,7 +55,7 @@ type QuestionEdge @relation(name: "ANSWER") {
 type SolutionEdge @relation(name: "ANSWER") {
   from: Question
   to: Solution
-  identity: ID!
+  answerId: ID!
   start: ID
   end: ID
   source_ref: String
@@ -74,7 +74,7 @@ type SolutionEdge @relation(name: "ANSWER") {
 #RETURN q,eq,es
 type Mutation {
   mergeQuestionAnswer(
-    identity: ID!
+    answerId: ID!
     start: ID!
     end: ID!
     source_ref: String
@@ -83,7 +83,7 @@ type Mutation {
     synonyms: String
   ): Question
     @cypher(
-      statement: "MATCH (q:Question {questionId: $start}) OPTIONAL MATCH (es:Solution {solutionId: $end}) OPTIONAL MATCH  (eq:Question {questionId: $end}) MERGE (q)-[:ANSWER {identity:$identity, source_ref: $source_ref, raw_content: $raw_content ,value: $value,synonyms: $synonyms,start:$start,end:$end}]->(es) MERGE (q)-[:ANSWER {identity:$identity, source_ref: $source_ref, raw_content: $raw_content ,value: $value,synonyms: $synonyms,start:$start,end:$end}]->(eq) RETURN q"
+      statement: "MATCH (q:Question {questionId: $start}) OPTIONAL MATCH (es:Solution {solutionId: $end}) OPTIONAL MATCH  (eq:Question {questionId: $end}) MERGE (q)-[:ANSWER {answerId:$answerId, source_ref: $source_ref, raw_content: $raw_content ,value: $value,synonyms: $synonyms,start:$start,end:$end}]->(es) MERGE (q)-[:ANSWER {answerId:$answerId, source_ref: $source_ref, raw_content: $raw_content ,value: $value,synonyms: $synonyms,start:$start,end:$end}]->(eq) RETURN q"
     )
 
     

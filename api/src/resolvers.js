@@ -4,7 +4,6 @@ export const resolvers = {
       let resultJson = {
         result: await Utils.executeRawQuery(object, params, context, info),
       }
-
       return resultJson
     },
     /***
@@ -87,9 +86,12 @@ export const Utils = {
           console.log('records not found')
           return { success: true, message: 'records not found' }
         }
-        result.records.map((record) => {
-          let records = record._fields
-          resultArray.push(records)
+        resultArray = result.records.map((record) => {
+          let fields = record._fields
+          let properties = fields.map((field) => {
+            return field.properties
+          })
+          return properties
         })
         return resultArray
       })
@@ -265,7 +267,7 @@ export const Utils = {
           }
 
           let edge = {
-            identity: prop.identity,
+            answerId: prop.answerId,
             source_ref: prop.source_ref,
             raw_content: prop.raw_content,
             value: prop.value,
@@ -352,7 +354,7 @@ export const Utils = {
           }
 
           let edge = {
-            identity: prop.identity,
+            answerId: prop.answerId,
             source_ref: prop.source_ref,
             raw_content: prop.raw_content,
             value: prop.value,
@@ -410,7 +412,7 @@ export const Utils = {
           console.log('Edges - ', edgeProp)
 
           let edge = {
-            identity: edgeProp.identity,
+            answerId: edgeProp.answerId,
             source_ref: edgeProp.source_ref,
             raw_content: edgeProp.raw_content,
             value: edgeProp.value,

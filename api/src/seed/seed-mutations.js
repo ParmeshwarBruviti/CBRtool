@@ -177,16 +177,17 @@ const getAnswerMutations = (answers) => {
   return answers.map((ans) => {
     let ansEdge = ans.r
     let attributes = ansEdge.properties
-    let identity = ansEdge.identity
+    let answerId = ansEdge.identity
     let start = ansEdge.start
     let end = ansEdge.end
+
     let raw_content = attributes.raw_content ? attributes.raw_content : ''
     let source_ref = attributes.source_ref ? attributes.source_ref : ''
     let value = attributes.value ? attributes.value : ''
     let synonyms = attributes.synonyms ? attributes.synonyms : ''
 
     let vars = {
-      identity: identity,
+      answerId: answerId,
       start: start,
       end: end,
       raw_content: raw_content,
@@ -197,7 +198,7 @@ const getAnswerMutations = (answers) => {
     return {
       mutation: gql`
         mutation mergeQuestionAns(
-          $identity: ID!
+          $answerId: ID!
           $start: ID!
           $end: ID!
           $source_ref: String
@@ -219,7 +220,7 @@ const getAnswerMutations = (answers) => {
 
           questionSolutionEdge: MergeQuestionSolution_edges(
             data: {
-              identity: $identity
+              answerId: $answerId
               source_ref: $source_ref
               raw_content: $raw_content
               value: $value
@@ -230,12 +231,12 @@ const getAnswerMutations = (answers) => {
             to: { solutionId: $end }
             from: { questionId: $start }
           ) {
-            identity
+            answerId
           }
 
           questionQuestionEdge: MergeQuestionQuestion_edges(
             data: {
-              identity: $identity
+              answerId: $answerId
               source_ref: $source_ref
               raw_content: $raw_content
               value: $value
@@ -246,7 +247,7 @@ const getAnswerMutations = (answers) => {
             to: { questionId: $end }
             from: { questionId: $start }
           ) {
-            identity
+            answerId
           }
 
           # mergeSolutionIn_edges: MergeSolutionIn_edges(
