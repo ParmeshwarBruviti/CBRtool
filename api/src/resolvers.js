@@ -112,7 +112,7 @@ export const Utils = {
     if (!params.count) {
       query = `MATCH (q:Question) RETURN q ;`
     } else {
-      query = `MATCH (q:Question) RETURN q LIMIT $count;`
+      query = `MATCH (q:Question) WITH q ORDER BY toInteger(q.questionId) ASC return q LIMIT $count;`
     }
     return session
       .run(query, params)
@@ -158,10 +158,10 @@ export const Utils = {
     let query
     if (!params.count) {
       query = `
-      MATCH (q:Question) WITH q MATCH (q)-[:ANSWER]->(s:Solution) RETURN DISTINCT s;`
+      MATCH (s:Solution) RETURN s;`
     } else {
       query = `
-      MATCH (q:Question) WITH q LIMIT $count MATCH (q)-[:ANSWER]->(s:Solution) RETURN DISTINCT s;`
+       MATCH (q:Question) WITH q ORDER BY toInteger(q.questionId) ASC LIMIT $count MATCH (q)-[:ANSWER]->(s:Solution) RETURN DISTINCT s;`
     }
 
     return session
@@ -213,7 +213,7 @@ export const Utils = {
       MATCH (q:Question) WITH q MATCH (q)-[r:ANSWER]-> (s:Solution) return q,s,r;`
       } else {
         query = `
-      MATCH (q:Question) WITH q LIMIT $count MATCH (q)-[r:ANSWER]-> (s:Solution) return q,s,r;`
+        MATCH (q:Question) WITH q ORDER BY toInteger(q.questionId) ASC LIMIT $count  MATCH (q)-[r:ANSWER]-> (s:Solution) return q,s,r;`
       }
     } else {
       query = `MATCH (q:Question {questionId:$questionId}) MATCH (q)-[r:ANSWER]-> (s:Solution) return q,s,r;`
@@ -274,6 +274,8 @@ export const Utils = {
             synonyms: prop.synonyms,
             from: question,
             to: solution,
+            start: prop.start,
+            end: prop.end,
           }
 
           solutionEdges.push(edge)
@@ -301,7 +303,7 @@ export const Utils = {
       MATCH (q1:Question) WITH q1 MATCH (q1)-[r:ANSWER]-> (q2:Question) return q1,q2,r;`
       } else {
         query = `
-      MATCH (q1:Question) WITH q1 LIMIT $count MATCH (q1)-[r:ANSWER]-> (q2:Question) return q1,q2,r;`
+        MATCH (q2:Question)<-[r:ANSWER]-(q1:Question) WITH q1,q2,r ORDER BY toInteger(q2.questionId) ASC LIMIT $count-1 RETURN q1,q2,r`
       }
     } else {
       query = `
@@ -315,13 +317,12 @@ export const Utils = {
     return session
       .run(query, params)
       .then(function (result) {
-        let questionEdges = []
         if (result.records.length < 1) {
           console.log('records not found')
           return null
         }
 
-        result.records.map((record) => {
+        let questionEdges = result.records.map((record) => {
           let QueProp1 = record._fields[0].properties
           console.log('Question1', QueProp1)
 
@@ -361,9 +362,11 @@ export const Utils = {
             synonyms: prop.synonyms,
             from: question1,
             to: question2,
+            start: prop.start,
+            end: prop.end,
           }
 
-          questionEdges.push(edge)
+          return edge
         })
         return questionEdges
       })
@@ -401,13 +404,12 @@ export const Utils = {
     return session
       .run(query, params)
       .then(function (result) {
-        let questionEdges = []
         if (result.records.length < 1) {
           console.log('records not found')
           return null
         }
 
-        result.records.map((record) => {
+        let questionEdges = result.records.map((record) => {
           let edgeProp = record._fields[0].properties
           console.log('Edges - ', edgeProp)
 
@@ -421,7 +423,7 @@ export const Utils = {
             end: edgeProp.end,
           }
 
-          questionEdges.push(edge)
+          return edge
         })
         return questionEdges
       })
