@@ -9,7 +9,10 @@ import { SwipeableDrawer, IconButton, Menu, MenuItem } from '@material-ui/core'
 
 import { AddCircleOutline as AddIcon } from '@material-ui/icons'
 
-import { nodes, edges } from './Graph/sample-data'
+// import { nodes, edges } from './Graph/sample-data'
+
+import { GET_ALL_NODES_EDGES } from '../../queries/custom-queries'
+import { useQuery } from '@apollo/react-hooks'
 
 const options = ['Add Node', 'Add Edge']
 
@@ -77,6 +80,8 @@ function TreeView() {
   const [routes, setRoutes] = useState([])
   const [isDrawerOpen, setDrwaerState] = React.useState(false)
 
+  const { loading, error, data } = useQuery(GET_ALL_NODES_EDGES)
+
   useEffect(() => {
     let routess = getRoutes(url)
     setRoutes(routess)
@@ -119,12 +124,110 @@ function TreeView() {
     }
   }
 
+  let nodes = [],
+    edges = []
+
+  if (data) {
+    console.log('data : ', data)
+    const {
+      getAllInOne: { questions, solutions, questionEdges, solutionEdges },
+    } = data
+
+    nodes = [
+      ...(questions
+        ? questions.map((q) => {
+            const data = {
+              id: q.questionId,
+              name: q.questionId,
+              // weight: 180,
+              // height: 80,
+              type: 'Question',
+              properties: {
+                ...q,
+              },
+            }
+            return {
+              data,
+            }
+          })
+        : []),
+      ...(solutions
+        ? solutions.map((s) => {
+            const data = {
+              id: s.solutionId,
+              name: s.solutionId,
+              type: 'Solution',
+              // weight: 180,
+              // height: 80,
+              properties: {
+                ...s,
+              },
+            }
+            return {
+              data,
+            }
+          })
+        : []),
+    ]
+
+    edges = [
+      ...(questionEdges
+        ? questionEdges.map((qe) => {
+            const data = {
+              id: qe.identity,
+              name: qe.identity,
+              type: 'QuestionEdge',
+              // weight: 1,
+              source: qe.from.questionId,
+              target: qe.to.questionId,
+              properties: {
+                ...qe,
+              },
+            }
+            return {
+              data,
+            }
+          })
+        : []),
+      ...(solutionEdges
+        ? solutionEdges.map((se) => {
+            const data = {
+              id: se.identity,
+              name: se.identity,
+              type: 'SolutionEdge',
+              // weight: 1,
+              source: se.from.questionId,
+              target: se.to.solutionId,
+              properties: {
+                ...se,
+              },
+            }
+
+            return {
+              data,
+            }
+          })
+        : []),
+    ]
+
+    console.log('Nodes : ', nodes)
+    console.log('edges : ', edges)
+  }
+
   return (
     <div className="tree-view">
-      <div className="view">
-        <SubMenu className="menu" selectedMenu={selectedMenu} />
-        <Graph className="right-panel" nodes={nodes} edges={edges} />
-      </div>
+      {loading ? (
+        <div className="view">Loading ...</div>
+      ) : error ? (
+        <div className="view">Getting Error</div>
+      ) : data ? (
+        <div className="view">
+          <SubMenu className="menu" selectedMenu={selectedMenu} />
+          <Graph className="right-panel" nodes={nodes} edges={edges} />
+        </div>
+      ) : (
+        <div className="view">Empty Data</div>
+      )}
       <SwipeableDrawer
         anchor="right"
         open={isDrawerOpen}
