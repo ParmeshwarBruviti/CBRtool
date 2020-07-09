@@ -13,6 +13,8 @@ import {
   ADD_SOLUTION_MUTATION,
 } from '../../../../queries/node-queries'
 
+import { GET_ALL_NODES_EDGES } from '../../../../queries/custom-queries'
+
 function AddNode() {
   const history = useHistory()
   const [state, setState] = useState({
@@ -70,6 +72,11 @@ function AddNode() {
       variables: {
         ...params,
       },
+      refetchQueries: [
+        {
+          query: GET_ALL_NODES_EDGES,
+        },
+      ],
     })
       .then((res) => {
         history.push(`/tree`, { isDrawerOpen: false })
@@ -89,6 +96,11 @@ function AddNode() {
       variables: {
         ...params,
       },
+      refetchQueries: [
+        {
+          query: GET_ALL_NODES_EDGES,
+        },
+      ],
     })
       .then((res) => {
         history.push(`/tree`, { isDrawerOpen: false })
