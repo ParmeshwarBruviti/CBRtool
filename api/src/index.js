@@ -23,11 +23,14 @@ const app = express()
 const schema = makeAugmentedSchema({
   typeDefs,
   resolvers,
+  debug: true,
   config: {
     query: {
-      exclude: ['getQuestions'],
+      exclude: ['Edge'],
     },
-    mutation: {},
+    mutation: {
+      exclude: ['Edge'],
+    },
   },
 })
 

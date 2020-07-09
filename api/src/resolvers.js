@@ -1,5 +1,11 @@
 export const resolvers = {
   Query: {
+    async executeRawQuery(object, params, context, info) {
+      let resultJson = {
+        result: await Utils.executeRawQuery(object, params, context, info),
+      }
+      return resultJson
+    },
     /***
      * Get Questions with thier solutions and edges between them of provided count
      */
@@ -25,10 +31,77 @@ export const resolvers = {
       console.log(resultJson)
       return resultJson
     },
+
+    /***
+     * Get all question edges of provided questionId
+     */
+    async getQuestionEdgesOfQuestion(object, params, context, info) {
+      return await Utils.getQuestionEdges(object, params, context, info)
+    },
+
+    /***
+     * Get all solution edges of provided questionId
+     */
+    async getSolutionEdgesOfQuestion(object, params, context, info) {
+      return await Utils.getSolutionEdges(object, params, context, info)
+    },
+
+    /***
+     * to get all edges of question privided questionId
+     */
+    async getEdgesOfQuestion(object, params, context, info) {
+      return await Utils.getAllEdgesOf(object, params, context, info)
+    },
+
+    /***
+     * to get all edges of question privided questionId
+     */
+    async getEdgesOfSolution(object, params, context, info) {
+      return await Utils.getAllEdgesOf(object, params, context, info)
+    },
+    /***
+     * to get all edges of question privided questionId
+     */
+    async getEdges(object, params, context, info) {
+      return await Utils.getAllEdgesOf(object, params, context, info)
+    },
   },
 }
 
 export const Utils = {
+  executeRawQuery(object, params, context, info) {
+    console.log(object, info)
+    let session = context.driver.session()
+    let query
+    if (!params.query) {
+      return { success: false }
+    } else {
+      query = params.query
+    }
+    return session
+      .run(query, params)
+      .then(function (result) {
+        let resultArray = []
+        if (result.records.length < 1) {
+          console.log('records not found')
+          return { success: true, message: 'records not found' }
+        }
+        resultArray = result.records.map((record) => {
+          let fields = record._fields
+          let properties = fields.map((field) => {
+            return field.properties
+          })
+          return properties
+        })
+        return resultArray
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+      .finally(() => {
+        session.close()
+      })
+  },
   /***
    * Fetches questions from neo4j db with provided count
    */
@@ -39,7 +112,7 @@ export const Utils = {
     if (!params.count) {
       query = `MATCH (q:Question) RETURN q ;`
     } else {
-      query = `MATCH (q:Question) RETURN q LIMIT $count;`
+      query = `MATCH (q:Question) WITH q ORDER BY toInteger(q.questionId) ASC return q LIMIT $count;`
     }
     return session
       .run(query, params)
@@ -85,10 +158,10 @@ export const Utils = {
     let query
     if (!params.count) {
       query = `
-      MATCH (q:Question) WITH q MATCH (q)-[:ANSWER]->(s:Solution) RETURN DISTINCT s;`
+      MATCH (s:Solution) RETURN s;`
     } else {
       query = `
-      MATCH (q:Question) WITH q LIMIT $count MATCH (q)-[:ANSWER]->(s:Solution) RETURN DISTINCT s;`
+       MATCH (q:Question) WITH q ORDER BY toInteger(q.questionId) ASC LIMIT $count MATCH (q)-[:ANSWER]->(s:Solution) RETURN DISTINCT s;`
     }
 
     return session
@@ -134,12 +207,16 @@ export const Utils = {
     console.log(object, info)
 
     let query
-    if (!params.count) {
-      query = `
+    if (!params.questionId) {
+      if (!params.count) {
+        query = `
       MATCH (q:Question) WITH q MATCH (q)-[r:ANSWER]-> (s:Solution) return q,s,r;`
+      } else {
+        query = `
+        MATCH (q:Question) WITH q ORDER BY toInteger(q.questionId) ASC LIMIT $count  MATCH (q)-[r:ANSWER]-> (s:Solution) return q,s,r;`
+      }
     } else {
-      query = `
-      MATCH (q:Question) WITH q LIMIT $count MATCH (q)-[r:ANSWER]-> (s:Solution) return q,s,r;`
+      query = `MATCH (q:Question {questionId:$questionId}) MATCH (q)-[r:ANSWER]-> (s:Solution) return q,s,r;`
     }
 
     console.log('in getSolutionEdges resolver')
@@ -190,13 +267,15 @@ export const Utils = {
           }
 
           let edge = {
-            identity: prop.identity,
+            answerId: prop.answerId,
             source_ref: prop.source_ref,
             raw_content: prop.raw_content,
             value: prop.value,
             synonyms: prop.synonyms,
             from: question,
             to: solution,
+            start: prop.start,
+            end: prop.end,
           }
 
           solutionEdges.push(edge)
@@ -218,12 +297,17 @@ export const Utils = {
     console.log(object, info)
 
     let query
-    if (!params.count) {
-      query = `
+    if (!params.questionId) {
+      if (!params.count) {
+        query = `
       MATCH (q1:Question) WITH q1 MATCH (q1)-[r:ANSWER]-> (q2:Question) return q1,q2,r;`
+      } else {
+        query = `
+        MATCH (q2:Question)<-[r:ANSWER]-(q1:Question) WITH q1,q2,r ORDER BY toInteger(q2.questionId) ASC LIMIT $count-1 RETURN q1,q2,r`
+      }
     } else {
       query = `
-      MATCH (q1:Question) WITH q1 LIMIT $count MATCH (q1)-[r:ANSWER]-> (q2:Question) return q1,q2,r;`
+      MATCH (q1:Question {questionId:$questionId}) WITH q1 MATCH (q1)-[r:ANSWER]-> (q2:Question) return q1,q2,r;`
     }
 
     console.log('in getQuestionEdges resolver')
@@ -233,13 +317,12 @@ export const Utils = {
     return session
       .run(query, params)
       .then(function (result) {
-        let questionEdges = []
         if (result.records.length < 1) {
           console.log('records not found')
           return null
         }
 
-        result.records.map((record) => {
+        let questionEdges = result.records.map((record) => {
           let QueProp1 = record._fields[0].properties
           console.log('Question1', QueProp1)
 
@@ -272,16 +355,75 @@ export const Utils = {
           }
 
           let edge = {
-            identity: prop.identity,
+            answerId: prop.answerId,
             source_ref: prop.source_ref,
             raw_content: prop.raw_content,
             value: prop.value,
             synonyms: prop.synonyms,
             from: question1,
             to: question2,
+            start: prop.start,
+            end: prop.end,
           }
 
-          questionEdges.push(edge)
+          return edge
+        })
+        return questionEdges
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+      .finally(() => {
+        session.close()
+      })
+  },
+
+  /***
+   * getAllEdgesOFQuestion - for particular question
+   * getAllEdgesOfSolution - for particular solution
+   * getEdges - all edges with count
+   */
+  getAllEdgesOf(object, params, context, info) {
+    console.log(object, info)
+
+    let query
+    if (params.questionId) {
+      query = `MATCH (q:Question {questionId:$questionId}) WITH q MATCH (q)-[r:ANSWER]-() return r;`
+    } else if (params.solutionId) {
+      query = `MATCH (s:Solution {solutionId:$solutionId}) WITH s MATCH (s)-[r:ANSWER]-() return r;`
+    } else if (params.count && params.count > 0) {
+      query = `MATCH ()-[r:ANSWER]-() return r LIMIT $count;`
+    } else {
+      query = `MATCH ()-[r:ANSWER]-() return r;`
+    }
+
+    console.log('in getAllEdges resolver')
+
+    let session = context.driver.session()
+
+    return session
+      .run(query, params)
+      .then(function (result) {
+        if (result.records.length < 1) {
+          console.log('records not found')
+          return null
+        }
+
+        let questionEdges = result.records.map((record) => {
+          let edgeProp = record._fields[0].properties
+          console.log('Edges - ', edgeProp)
+
+          let edge = {
+            answerId: edgeProp.answerId,
+            source_ref: edgeProp.source_ref,
+            raw_content: edgeProp.raw_content,
+            value: edgeProp.value,
+            synonyms: edgeProp.synonyms,
+            start: edgeProp.start,
+            end: edgeProp.end,
+          }
+
+          return edge
         })
         return questionEdges
       })
