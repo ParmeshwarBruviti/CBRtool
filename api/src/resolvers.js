@@ -274,6 +274,8 @@ export const Utils = {
             synonyms: prop.synonyms,
             from: question,
             to: solution,
+            start: prop.start,
+            end: prop.end,
           }
 
           solutionEdges.push(edge)
@@ -315,13 +317,12 @@ export const Utils = {
     return session
       .run(query, params)
       .then(function (result) {
-        let questionEdges = []
         if (result.records.length < 1) {
           console.log('records not found')
           return null
         }
 
-        result.records.map((record) => {
+        let questionEdges = result.records.map((record) => {
           let QueProp1 = record._fields[0].properties
           console.log('Question1', QueProp1)
 
@@ -361,9 +362,11 @@ export const Utils = {
             synonyms: prop.synonyms,
             from: question1,
             to: question2,
+            start: prop.start,
+            end: prop.end,
           }
 
-          questionEdges.push(edge)
+          return edge
         })
         return questionEdges
       })
@@ -401,13 +404,12 @@ export const Utils = {
     return session
       .run(query, params)
       .then(function (result) {
-        let questionEdges = []
         if (result.records.length < 1) {
           console.log('records not found')
           return null
         }
 
-        result.records.map((record) => {
+        let questionEdges = result.records.map((record) => {
           let edgeProp = record._fields[0].properties
           console.log('Edges - ', edgeProp)
 
@@ -421,7 +423,7 @@ export const Utils = {
             end: edgeProp.end,
           }
 
-          questionEdges.push(edge)
+          return edge
         })
         return questionEdges
       })
