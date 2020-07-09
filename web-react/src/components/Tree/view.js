@@ -124,95 +124,97 @@ function TreeView() {
     }
   }
 
-  let nodes = [],
-    edges = []
+  const processDataForGraph = () => {
+    let startNodeId = ''
+    if (data) {
+      const {
+        getAllInOne: { questions, solutions, questionEdges, solutionEdges },
+      } = data
 
-  if (data) {
-    console.log('data : ', data)
-    const {
-      getAllInOne: { questions, solutions, questionEdges, solutionEdges },
-    } = data
+      return {
+        nodes: [
+          ...(questions
+            ? questions.map((q) => {
+                if (q.start) {
+                  startNodeId = q.questionId
+                }
+                const data = {
+                  id: q.questionId,
+                  name: q.raw_content,
+                  type: 'Question',
+                  color: '#b7b7b7',
+                  properties: {
+                    ...q,
+                  },
+                }
+                return {
+                  data,
+                }
+              })
+            : []),
+          ...(solutions
+            ? solutions.map((s) => {
+                const data = {
+                  id: s.solutionId,
+                  name: s.raw_content,
+                  type: 'Solution',
+                  color: '#7acc7a',
+                  properties: {
+                    ...s,
+                  },
+                }
+                return {
+                  data,
+                }
+              })
+            : []),
+        ],
+        edges: [
+          ...(questionEdges
+            ? questionEdges.map((qe) => {
+                const data = {
+                  id: qe.identity,
+                  name: qe.identity,
+                  type: 'QuestionEdge',
+                  // weight: 1,
+                  source: qe.from.questionId,
+                  target: qe.to.questionId,
+                  properties: {
+                    ...qe,
+                  },
+                }
+                return {
+                  data,
+                }
+              })
+            : []),
+          ...(solutionEdges
+            ? solutionEdges.map((se) => {
+                const data = {
+                  id: se.identity,
+                  name: se.identity,
+                  type: 'SolutionEdge',
+                  // weight: 1,
+                  source: se.from.questionId,
+                  target: se.to.solutionId,
+                  properties: {
+                    ...se,
+                  },
+                }
 
-    nodes = [
-      ...(questions
-        ? questions.map((q) => {
-            const data = {
-              id: q.questionId,
-              name: q.questionId,
-              // weight: 180,
-              // height: 80,
-              type: 'Question',
-              properties: {
-                ...q,
-              },
-            }
-            return {
-              data,
-            }
-          })
-        : []),
-      ...(solutions
-        ? solutions.map((s) => {
-            const data = {
-              id: s.solutionId,
-              name: s.solutionId,
-              type: 'Solution',
-              // weight: 180,
-              // height: 80,
-              properties: {
-                ...s,
-              },
-            }
-            return {
-              data,
-            }
-          })
-        : []),
-    ]
-
-    edges = [
-      ...(questionEdges
-        ? questionEdges.map((qe) => {
-            const data = {
-              id: qe.answerId,
-              name: qe.answerId,
-              type: 'QuestionEdge',
-              // weight: 1,
-              source: qe.from.questionId,
-              target: qe.to.questionId,
-              properties: {
-                ...qe,
-              },
-            }
-            return {
-              data,
-            }
-          })
-        : []),
-      ...(solutionEdges
-        ? solutionEdges.map((se) => {
-            const data = {
-              id: se.identity,
-              name: se.identity,
-              type: 'SolutionEdge',
-              // weight: 1,
-              source: se.from.questionId,
-              target: se.to.solutionId,
-              properties: {
-                ...se,
-              },
-            }
-
-            return {
-              data,
-            }
-          })
-        : []),
-    ]
-
-    console.log('Nodes : ', nodes)
-    console.log('edges : ', edges)
+                return {
+                  data,
+                }
+              })
+            : []),
+        ],
+        startNodeId,
+      }
+    }
+    return {}
   }
+
+  const { nodes = [], edges = [], startNodeId = '' } = processDataForGraph()
 
   return (
     <div className="tree-view">
@@ -223,7 +225,12 @@ function TreeView() {
       ) : data ? (
         <div className="view">
           <SubMenu className="menu" selectedMenu={selectedMenu} />
-          <Graph className="right-panel" nodes={nodes} edges={edges} />
+          <Graph
+            className="right-panel"
+            nodes={nodes}
+            edges={edges}
+            startNodeId={startNodeId}
+          />
         </div>
       ) : (
         <div className="view">Empty Data</div>

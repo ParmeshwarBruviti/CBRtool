@@ -20,7 +20,8 @@ function Graph(props) {
 
   const layout = {
     name: 'breadthfirst',
-    roots: '#1594233960747',
+    roots: `#${props.startNodeId}`,
+
   }
 
   const data = [...props.nodes, ...props.edges]

@@ -3,15 +3,19 @@ export default [
     selector: 'node',
     style: {
       label: 'data(name)',
-      'font-family': 'helvetica',
-      'font-size': '14px',
-      'text-outline-width': '3px',
-      'text-outline-color': 'rgb(153,153,153)',
-      'text-valign': 'center',
+      'font-family': 'Arial',
+      'font-weight': 'bold',
+      'font-size': '5.2em',
+
       color: 'rgb(255,255,255)',
-      width: 'mapData(weight, 30, 80, 20, 50)',
-      height: 'mapData(height, 0, 200, 10, 45)',
-      'border-color': 'rgb(255,255,255)',
+      'background-color': 'data(color)',
+
+      'text-valign': 'center',
+      'text-wrap': 'ellipsis',
+      'text-max-width': '290px',
+
+      width: '320px',
+      height: '320px',
     },
   },
   {
@@ -26,9 +30,11 @@ export default [
   {
     selector: 'edge',
     style: {
-      width: '2px',
-      'target-arrow-shape': 'triangle',
+      width: '7px',
+
+      'arrow-scale': '2',
       'curve-style': 'bezier',
+      'target-arrow-shape': 'triangle',
     },
   },
   {
