@@ -107,4 +107,6 @@ type Query {
   getEdgesOfSolution(solutionId:ID!):[Edge]
 
   getEdges(count:Int):[Edge]
+
+  executeRawQuery(query:String!):JSON
 }

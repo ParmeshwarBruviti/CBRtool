@@ -1,5 +1,12 @@
 export const resolvers = {
   Query: {
+    async executeRawQuery(object, params, context, info) {
+      let resultJson = {
+        result: await Utils.executeRawQuery(object, params, context, info),
+      }
+
+      return resultJson
+    },
     /***
      * Get Questions with thier solutions and edges between them of provided count
      */
@@ -63,6 +70,36 @@ export const resolvers = {
 }
 
 export const Utils = {
+  executeRawQuery(object, params, context, info) {
+    console.log(object, info)
+    let session = context.driver.session()
+    let query
+    if (!params.query) {
+      return { success: false }
+    } else {
+      query = params.query
+    }
+    return session
+      .run(query, params)
+      .then(function (result) {
+        let resultArray = []
+        if (result.records.length < 1) {
+          console.log('records not found')
+          return { success: true, message: 'records not found' }
+        }
+        result.records.map((record) => {
+          let records = record._fields
+          resultArray.push(records)
+        })
+        return resultArray
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+      .finally(() => {
+        session.close()
+      })
+  },
   /***
    * Fetches questions from neo4j db with provided count
    */
