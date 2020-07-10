@@ -1,14 +1,28 @@
 import React, { useEffect, useState } from 'react'
 
+import Cytoscape from 'cytoscape'
+import dagre from 'cytoscape-dagre'
+import cola from 'cytoscape-cola'
+import coseBilkent from 'cytoscape-cose-bilkent'
+import cise from 'cytoscape-cise'
+import klay from 'cytoscape-klay'
+
 import CytoscapeComponent from 'react-cytoscapejs'
 
 import style from './style'
+
+Cytoscape.use(dagre) // dagre
+Cytoscape.use(cola) // cola
+Cytoscape.use(coseBilkent) // cose-bilkent
+Cytoscape.use(cise) // cise
+Cytoscape.use(klay) // klay
 
 function Graph(props) {
   const [coreCy, setCoreCy] = useState(null)
 
   useEffect(() => {
     const cy = coreCy
+
     if (cy) {
       cy.on('click', 'node', (e) => {
         const node = e.target.id()
@@ -19,9 +33,8 @@ function Graph(props) {
   })
 
   const layout = {
-    name: 'breadthfirst',
+    name: 'circle',
     roots: `#${props.startNodeId}`,
-
   }
 
   const data = [...props.nodes, ...props.edges]
