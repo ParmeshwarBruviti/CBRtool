@@ -46,6 +46,8 @@ function AddEdge() {
       ...params
     } = state
     params.answerId = new Date().getTime()
+    params.start = params.from;
+    params.end = params.to;
   
     console.log('Edge Details : ', { ...params })
 

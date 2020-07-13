@@ -177,7 +177,7 @@ const getAnswerMutations = (answers) => {
   return answers.map((ans) => {
     let ansEdge = ans.r
     let attributes = ansEdge.properties
-    let answerId = new Date().getTime()
+    let answerId = 1000000 + ansEdge.identity
     let start = ansEdge.start
     let end = ansEdge.end
 

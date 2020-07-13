@@ -108,5 +108,7 @@ type Query {
 
   getEdges(count:Int):[Edge]
 
+  Edge(answerId:ID!):[Edge]
+
   executeRawQuery(query:String!):JSON
 }

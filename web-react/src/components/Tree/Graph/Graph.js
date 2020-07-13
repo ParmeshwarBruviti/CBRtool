@@ -1,21 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import Cytoscape from 'cytoscape'
-import dagre from 'cytoscape-dagre'
-import cola from 'cytoscape-cola'
-import coseBilkent from 'cytoscape-cose-bilkent'
-import cise from 'cytoscape-cise'
-import klay from 'cytoscape-klay'
+
 import { useHistory } from 'react-router-dom'
 
 import CytoscapeComponent from 'react-cytoscapejs'
 
 import style from './style'
-
-Cytoscape.use(dagre) // dagre
-Cytoscape.use(cola) // cola
-Cytoscape.use(coseBilkent) // cose-bilkent
-Cytoscape.use(cise) // cise
-Cytoscape.use(klay) // klay
 
 function Graph(props) {
   const [coreCy, setCoreCy] = useState(null),
@@ -39,11 +28,27 @@ function Graph(props) {
           }
         )
       })
+
+      cy.on('click tap', 'edge', (e) => {
+        console.log("clicked on",e.target)
+        const edgeId = e.target.id()
+        const details = props.edges.find((n) => n.data.id === edgeId)
+         console.log("Details : ", details);
+        history.push(
+          `/tree/view-edge/${(
+            details.data.type || 'na'
+          ).toLowerCase()}/${details.data.properties.answerId}`,
+          {
+            isDrawerOpen: true,
+            // data: details
+          }
+        )
+      })
     }
   }, [coreCy])
 
   const layout = {
-    name: 'circle',
+    name: 'breadthfirst',
     roots: `#${props.startNodeId}`,
   }
 

@@ -61,4 +61,23 @@ const ADD_QUE_SOL_EDGE_MUTATION = gql`
   }
 `
 
-export { ADD_QUE_QUE_EDGE_MUTATION, ADD_QUE_SOL_EDGE_MUTATION }
+
+const GET_EDGE = gql`
+query($id: ID!) {
+  Edge(answerId: $id) {
+    answerId
+    end
+    start
+    raw_content
+    source_ref
+    synonyms
+    value
+  }
+}
+`
+
+export { 
+  ADD_QUE_QUE_EDGE_MUTATION,
+  ADD_QUE_SOL_EDGE_MUTATION,
+  GET_EDGE 
+  }
