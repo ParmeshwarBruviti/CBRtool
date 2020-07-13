@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 
-import { Switch, Route, useHistory, useRouteMatch } from 'react-router-dom'
+import { Switch, Route, useHistory } from 'react-router-dom'
 
 import Graph from './Graph/Graph'
-import getRoutes from './routes'
+import routes from './routes'
 
 import { SwipeableDrawer, IconButton, Menu, MenuItem } from '@material-ui/core'
 
@@ -19,7 +19,7 @@ const options = ['Add Node', 'Add Edge']
 const ITEM_HEIGHT = 48
 
 function SubMenu(props) {
-  const [anchorEl, setAnchorEl] = React.useState(null)
+  const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
 
   const handleClick = (event) => {
@@ -76,26 +76,20 @@ function SubMenu(props) {
 
 function TreeView() {
   const history = useHistory()
-  const { url } = useRouteMatch()
-  const [routes, setRoutes] = useState([])
   const [isDrawerOpen, setDrwaerState] = React.useState(false)
 
   const { loading, error, data } = useQuery(GET_ALL_NODES_EDGES)
 
   useEffect(() => {
-    let routess = getRoutes(url)
-    setRoutes(routess)
-  }, [url])
-
-  history.listen((location) => {
-    const { state, pathname } = location
-    if (pathname === '/tree') {
-      // track root route listen
+    const {
+      location: { state, pathname },
+    } = history
+    if (pathname.indexOf('/tree') > -1) {
       if (state !== undefined && state.isDrawerOpen !== undefined) {
         setDrwaerState(state.isDrawerOpen)
       }
     }
-  })
+  }, [history.location.pathname])
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -239,7 +233,7 @@ function TreeView() {
         anchor="right"
         open={isDrawerOpen}
         onClose={() => {
-          // toggleDrawer(false)
+          // setDrwaerState(false);
         }}
         onOpen={toggleDrawer(true)}
       >

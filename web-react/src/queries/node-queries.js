@@ -58,4 +58,44 @@ const ADD_SOLUTION_MUTATION = gql`
   }
 `
 
-export { ADD_QUESTION_MUTATION, ADD_SOLUTION_MUTATION }
+const GET_QUESTION = gql`
+  query($id: ID!) {
+    Question(questionId: $id) {
+      _id
+      questionId
+      content
+      context
+      hint
+      raw_content
+      source_ref
+      space
+      start
+    }
+  }
+`
+
+const GET_SOLUTION = gql`
+  query($id: ID!) {
+    Solution(solutionId: $id) {
+      _id
+      solutionId
+      content
+      context
+      hint
+      raw_content
+      source_ref
+      space
+      parts
+      attachment_types
+      attachment_titles
+      attachment_paths
+    }
+  }
+`
+
+export {
+  ADD_QUESTION_MUTATION,
+  ADD_SOLUTION_MUTATION,
+  GET_QUESTION,
+  GET_SOLUTION,
+}
