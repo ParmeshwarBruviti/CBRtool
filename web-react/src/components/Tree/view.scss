@@ -26,9 +26,16 @@
 }
 
 .drawer {
-  min-width: 300px;
+  width: 350px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
   .drawer-container {
     padding: ($default-padding - 5px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
     .drawer-header {
       .title {
         display: flex;
@@ -45,6 +52,8 @@
     }
     .drawer-content {
       margin: ($default-margin - 5px) $default-margin;
+      flex: 1;
+      overflow-y: auto;
       .form {
         display: flex;
         flex-direction: column;
@@ -53,7 +62,19 @@
           flex-direction: column;
           margin: ($default-margin - 5px) 0;
           label {
-            font-size: ($default-font-size - 0.1em);
+            font-size: ($default-font-size - 0.05em);
+            font-weight: 500;
+            color: $alert-color;
+            text-transform: uppercase;
+          }
+          span {
+            &.value {
+              font-size: ($default-font-size - 0.15em);
+              word-break: break-all;
+              &.empty {
+                padding-left: $default-padding;
+              }
+            }
           }
           input[type="text"],
           select {

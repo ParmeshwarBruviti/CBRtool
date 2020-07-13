@@ -1,6 +1,8 @@
 import React from 'react'
 
 import AddNode from './Graph/Node/AddNode'
+import ViewNode from './Graph/Node/ViewNode'
+
 import AddEdge from './Graph/Edge/AddEdge'
 
 function DefaultSection() {
@@ -9,27 +11,25 @@ function DefaultSection() {
 
 const routes = [
   {
-    path: '/',
+    path: '/tree',
     component: DefaultSection,
     exact: true,
   },
   {
-    path: '/add-node',
+    path: '/tree/add-node',
     component: AddNode,
     exact: true,
   },
   {
-    path: '/add-edge',
+    path: '/tree/view-node/:type/:id',
+    component: ViewNode,
+    exact: true,
+  },
+  {
+    path: '/tree/add-edge',
     component: AddEdge,
     exact: true,
   },
 ]
 
-function getRoutes(url) {
-  return routes.map((r) => {
-    r.path = url + r.path
-    return r
-  })
-}
-
-export default getRoutes
+export default routes
