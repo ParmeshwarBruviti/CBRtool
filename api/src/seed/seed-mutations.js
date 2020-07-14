@@ -1,5 +1,6 @@
 const gql = require('graphql-tag')
 import { Questions, Solutions, Answers } from './data'
+import { v4 as uuidv4 } from 'uuid'
 
 export const getSeedMutations = async () => {
   const questions = Questions
@@ -177,7 +178,7 @@ const getAnswerMutations = (answers) => {
   return answers.map((ans) => {
     let ansEdge = ans.r
     let attributes = ansEdge.properties
-    let answerId = 1000000 + ansEdge.identity
+    let answerId = uuidv4()
     let start = ansEdge.start
     let end = ansEdge.end
 

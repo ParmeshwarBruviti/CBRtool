@@ -26,30 +26,27 @@ function ViewEdge() {
   const { type = 'edge', id } = params
 
   const keyMapping = {
-    answerId:'answerId',
+    answerId: 'Answer Id',
     type: 'Type',
-    start:'start',
-    end:'end',
-    synonyms: 'synonyms',
-    value: 'value',
+    start: 'Start',
+    end: 'End',
+    synonyms: 'Synonyms',
+    value: 'Value',
     raw_content: 'Raw Content',
     source_ref: 'Source Ref',
   }
 
-  const { loading, error, data } = useQuery(
-    GET_EDGE,
-    {
-      variables: {
-        id,
-      },
-    }
-  )
+  const { loading, error, data } = useQuery(GET_EDGE, {
+    variables: {
+      id,
+    },
+  })
 
   const transformData = () => {
     if (!data) {
       return
     } else {
-      const resp =  data.Edge[0] 
+      const resp = data.Edge[0]
       return Object.keys(resp).reduce(
         (accumulator, currentValue) => {
           if (!keyMapping[currentValue]) return accumulator
@@ -77,7 +74,7 @@ function ViewEdge() {
     <div className="drawer-container">
       <div className="drawer-header">
         <div className="title">
-          <span>View Node Details</span>
+          <span>View Edge Details</span>
           <IconButton
             aria-label="more"
             aria-controls="long-menu"
