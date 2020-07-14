@@ -10,6 +10,8 @@ import { useQuery } from '@apollo/react-hooks'
 
 import { useMutation } from '@apollo/react-hooks'
 
+import { v4 as uuidv4 } from 'uuid'
+
 import {
   ADD_QUE_QUE_EDGE_MUTATION,
   ADD_QUE_SOL_EDGE_MUTATION,
@@ -45,7 +47,7 @@ function AddEdge() {
     var {
       ...params
     } = state
-    params.answerId = new Date().getTime()
+    params.answerId = uuidv4()
     params.start = params.from;
     params.end = params.to;
   
