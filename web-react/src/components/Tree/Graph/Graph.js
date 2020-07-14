@@ -17,7 +17,7 @@ function Graph(props) {
       cy.on('click tap', 'node', (e) => {
         const node = e.target.id()
         const details = props.nodes.find((n) => n.data.id === node)
-        // console.log("Details : ", details);
+        
         history.push(
           `/tree/view-node/${(
             details.data.type || 'na'
@@ -30,11 +30,13 @@ function Graph(props) {
       })
 
       cy.on('click tap', 'edge', (e) => {
-        console.log('clicked on', e.target)
+       
         const edgeId = e.target._private.data.properties.answerId
 
         const details = props.edges.find(
-          (n) => n.data.properties.answerId === edgeId
+          (n) => {
+            return n.data.properties.answerId === edgeId
+          }
         )
         console.log('Details : ', details)
         history.push(

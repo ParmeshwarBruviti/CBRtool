@@ -51,8 +51,6 @@ function AddEdge() {
     params.start = params.from;
     params.end = params.to;
   
-    console.log('Edge Details : ', { ...params })
-
     if(state.type === "toQuestion"){
       AddQuestionQuestionEdge({
         variables: {
