@@ -17,7 +17,7 @@ function Graph(props) {
       cy.on('click tap', 'node', (e) => {
         const node = e.target.id()
         const details = props.nodes.find((n) => n.data.id === node)
-        
+
         history.push(
           `/tree/view-node/${(
             details.data.type || 'na'
@@ -30,19 +30,14 @@ function Graph(props) {
       })
 
       cy.on('click tap', 'edge', (e) => {
-       
         const edgeId = e.target._private.data.properties.answerId
 
-        const details = props.edges.find(
-          (n) => {
-            return n.data.properties.answerId === edgeId
-          }
-        )
+        const details = props.edges.find((n) => {
+          return n.data.properties.answerId === edgeId
+        })
         console.log('Details : ', details)
         history.push(
-          `/tree/view-edge/${(details.data.type || 'na').toLowerCase()}/${
-            details.data.properties.answerId
-          }`,
+          `/tree/view-edge/${('Edge' || 'na').toLowerCase()}/${edgeId}`,
           {
             isDrawerOpen: true,
             // data: details
