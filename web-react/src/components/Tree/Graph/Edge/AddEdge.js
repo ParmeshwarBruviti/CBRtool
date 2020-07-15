@@ -19,8 +19,6 @@ import {
 
 import { GET_ALL_NODES_EDGES } from '../../../../queries/custom-queries'
 
-
-
 function AddEdge() {
   const history = useHistory()
   const { loading, error, data } = useQuery(GET_ALL_NODES_EDGES)
@@ -44,14 +42,12 @@ function AddEdge() {
   const [AddQuestionSolutionEdge] = useMutation(ADD_QUE_SOL_EDGE_MUTATION)
 
   const addRelationEdge = () => {
-    var {
-      ...params
-    } = state
+    var { ...params } = state
     params.answerId = uuidv4()
-    params.start = params.from;
-    params.end = params.to;
-  
-    if(state.type === "toQuestion"){
+    params.start = params.from
+    params.end = params.to
+
+    if (state.type === 'toQuestion') {
       AddQuestionQuestionEdge({
         variables: {
           ...params,
@@ -69,7 +65,7 @@ function AddEdge() {
         .catch((err) => {
           console.log('Err while adding edge : ', err)
         })
-    }else{
+    } else {
       AddQuestionSolutionEdge({
         variables: {
           ...params,
@@ -88,10 +84,7 @@ function AddEdge() {
           console.log('Err while adding edge : ', err)
         })
     }
-    
   }
-
-
 
   if (error) return <p>Error</p>
   if (loading) return <p>Loading</p>
@@ -129,58 +122,53 @@ function AddEdge() {
               <label>From Question</label>
               <select id="optType" name="from" onChange={update} required>
                 <option value="">Please Select</option>
-                {
-                
-                  data?.getAllInOne.questions?.map((q, index) => {
-                    return (
-                      <option key={index} value={q.questionId}>
-                        {' '}
-                        {q.questionId}{' '}
-                      </option>
-                    )
-                  })
-                }
+                {data?.getAllInOne.questions?.map((q, index) => {
+                  return (
+                    <option key={index} value={q.questionId}>
+                      {' '}
+                      {q.questionId}{' '}
+                    </option>
+                  )
+                })}
               </select>
             </div>
-            {state.type === 'toSolution'
-              ? [
-                  <div className="row">
-                    <label>To Solution</label>
-                    <select id="optType" name="to" onChange={update} required>
-                      <option value="">Please Select</option>
-                      {
-                        (console.log('data is', data),
-                        data?.getAllInOne.solutions?.map((s, index) => {
-                          return (
-                            <option key={index} value={s.solutionId}>
-                              {' '}
-                              {s.solutionId}{' '}
-                            </option>
-                          )
-                        }))
-                      }
-                    </select>
-                  </div>,
-                ]
-              : [
-                  <div className="row">
-                    <label>To Question</label>
-                    <select id="optType" name="to" onChange={update} required>
-                      <option value="">Please Select</option>
-                      {
-                        (console.log('data is', data),
-                        data?.getAllInOne.questions?.map((q, index) => {
-                          return (
-                            <option key={index} value={q.questionId}>
-                              {' '}
-                              {q.questionId}{' '}
-                            </option>
-                          )
-                        }))
-                      }
-                    </select>
-                  </div>,
-                ]}
+            {state.type === 'toSolution' ? (
+              <div className="row">
+                <label>To Solution</label>
+                <select id="optType" name="to" onChange={update} required>
+                  <option value="">Please Select</option>
+                  {
+                    (console.log('data is', data),
+                    data?.getAllInOne.solutions?.map((s, index) => {
+                      return (
+                        <option key={index} value={s.solutionId}>
+                          {' '}
+                          {s.solutionId}{' '}
+                        </option>
+                      )
+                    }))
+                  }
+                </select>
+              </div>
+            ) : (
+              <div className="row">
+                <label>To Question</label>
+                <select id="optType" name="to" onChange={update} required>
+                  <option value="">Please Select</option>
+                  {
+                    (console.log('data is', data),
+                    data?.getAllInOne.questions?.map((q, index) => {
+                      return (
+                        <option key={index} value={q.questionId}>
+                          {' '}
+                          {q.questionId}{' '}
+                        </option>
+                      )
+                    }))
+                  }
+                </select>
+              </div>
+            )}
             <div className="row">
               <label>Raw Content</label>
               <input

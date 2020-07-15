@@ -46,25 +46,29 @@ function ViewEdge() {
     if (!data) {
       return
     } else {
-      const resp = data.Edge[0]
-      return Object.keys(resp).reduce(
-        (accumulator, currentValue) => {
-          if (!keyMapping[currentValue]) return accumulator
-          return [
-            ...accumulator,
+      if (data.Edge) {
+        const resp = data.Edge[0]
+        return Object.keys(resp).reduce(
+          (accumulator, currentValue) => {
+            if (!keyMapping[currentValue]) return accumulator
+            return [
+              ...accumulator,
+              {
+                label: keyMapping[currentValue],
+                value: resp[currentValue],
+              },
+            ]
+          },
+          [
             {
-              label: keyMapping[currentValue],
-              value: resp[currentValue],
+              label: 'Type',
+              value: type,
             },
           ]
-        },
-        [
-          {
-            label: 'Type',
-            value: type,
-          },
-        ]
-      )
+        )
+      } else {
+        console.log('data not found')
+      }
     }
   }
 
@@ -97,9 +101,11 @@ function ViewEdge() {
               <div>Getting Error</div>
             ) : (
               <form className="form" autoComplete="off">
-                {details.map((d, i) => (
+                
+             {details?.map((d, i) => (
                   <Attribute key={`key-${i}`} label={d.label} value={d.value} />
                 ))}
+      
               </form>
             )}
           </div>

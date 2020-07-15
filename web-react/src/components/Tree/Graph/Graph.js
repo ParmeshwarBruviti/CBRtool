@@ -30,14 +30,10 @@ function Graph(props) {
       })
 
       cy.on('click tap', 'edge', (e) => {
-        const edgeId = e.target._private.data.properties.answerId
+        const edge = e.target.json().data
 
-        const details = props.edges.find((n) => {
-          return n.data.properties.answerId === edgeId
-        })
-        console.log('Details : ', details)
         history.push(
-          `/tree/view-edge/${('Edge' || 'na').toLowerCase()}/${edgeId}`,
+          `/tree/view-edge/${(edge.type || 'na').toLowerCase()}/${edge.id}`,
           {
             isDrawerOpen: true,
             // data: details

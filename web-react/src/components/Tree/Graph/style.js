@@ -2,7 +2,7 @@ export default [
   {
     selector: 'node',
     style: {
-      label: 'data(id)',
+      label: 'data(name)',
       'font-family': 'Arial',
       'font-weight': 'bold',
       'font-size': '5.2em',
