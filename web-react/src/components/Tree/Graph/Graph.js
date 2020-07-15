@@ -12,15 +12,28 @@ function Graph(props) {
 
   useEffect(() => {
     const cy = coreCy
+
     if (cy) {
       cy.on('click tap', 'node', (e) => {
         const node = e.target.id()
         const details = props.nodes.find((n) => n.data.id === node)
-        // console.log("Details : ", details);
+
         history.push(
           `/tree/view-node/${(
             details.data.type || 'na'
           ).toLowerCase()}/${node}`,
+          {
+            isDrawerOpen: true,
+            // data: details
+          }
+        )
+      })
+
+      cy.on('click tap', 'edge', (e) => {
+        const edge = e.target.json().data
+
+        history.push(
+          `/tree/view-edge/${(edge.type || 'na').toLowerCase()}/${edge.id}`,
           {
             isDrawerOpen: true,
             // data: details
@@ -33,7 +46,6 @@ function Graph(props) {
   const layout = {
     name: 'breadthfirst',
     roots: `#${props.startNodeId}`,
-
   }
 
   const data = [...props.nodes, ...props.edges]

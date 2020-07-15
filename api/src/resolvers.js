@@ -65,6 +65,13 @@ export const resolvers = {
     async getEdges(object, params, context, info) {
       return await Utils.getAllEdgesOf(object, params, context, info)
     },
+
+     /***
+     * to single edge of answerId / edgeId
+     */
+    async Edge(object, params, context, info) {
+      return await Utils.getAllEdgesOf(object, params, context, info)
+    },
   },
 }
 
@@ -387,7 +394,9 @@ export const Utils = {
     console.log(object, info)
 
     let query
-    if (params.questionId) {
+    if(params.answerId){
+      query = `MATCH (q:Question)-[r:ANSWER]->() where r.answerId = $answerId return r;`
+    } else if (params.questionId) {
       query = `MATCH (q:Question {questionId:$questionId}) WITH q MATCH (q)-[r:ANSWER]-() return r;`
     } else if (params.solutionId) {
       query = `MATCH (s:Solution {solutionId:$solutionId}) WITH s MATCH (s)-[r:ANSWER]-() return r;`

@@ -136,7 +136,7 @@ function TreeView() {
                   id: q.questionId,
                   name: q.raw_content,
                   type: 'Question',
-                  color: '#b7b7b7',
+                  color: '#eb7abf',
                   properties: {
                     ...q,
                   },
@@ -167,8 +167,8 @@ function TreeView() {
           ...(questionEdges
             ? questionEdges.map((qe) => {
                 const data = {
-                  id: qe.identity,
-                  name: qe.identity,
+                  id: qe.answerId,
+                  name: qe.answerId,
                   type: 'QuestionEdge',
                   // weight: 1,
                   source: qe.from.questionId,
@@ -185,8 +185,8 @@ function TreeView() {
           ...(solutionEdges
             ? solutionEdges.map((se) => {
                 const data = {
-                  id: se.identity,
-                  name: se.identity,
+                  id: se.answerId,
+                  name: se.answerId,
                   type: 'SolutionEdge',
                   // weight: 1,
                   source: se.from.questionId,
