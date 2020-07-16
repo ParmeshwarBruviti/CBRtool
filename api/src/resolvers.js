@@ -121,7 +121,7 @@ export const Utils = {
     if (!params.count) {
       query = `MATCH (q:Question) RETURN q ;`
     } else {
-      query = `MATCH (q:Question) WITH q ORDER BY toInteger(q.questionId) ASC return q LIMIT $count;`
+      query = `MATCH (q:Question) WITH q ORDER BY toInteger(q._id) ASC return q LIMIT $count;`
     }
     return session
       .run(query, params)
@@ -135,7 +135,7 @@ export const Utils = {
           let QueProp = record._fields[0].properties
           //console.log('solutionId', prop)
           let question = {
-            questionId: record._fields[0].identity.low,
+            _id: record._fields[0].identity.low,
             start: QueProp.start,
             context: QueProp.context,
             space: QueProp.space,
@@ -170,7 +170,7 @@ export const Utils = {
       MATCH (s:Solution) RETURN s;`
     } else {
       query = `
-       MATCH (q:Question) WITH q ORDER BY toInteger(q.questionId) ASC LIMIT $count MATCH (q)-[:ANSWER]->(s:Solution) RETURN DISTINCT s;`
+       MATCH (q:Question) WITH q ORDER BY toInteger(q._id) ASC LIMIT $count MATCH (q)-[:Answer]->(s:Solution) RETURN DISTINCT s;`
     }
 
     return session
@@ -185,7 +185,7 @@ export const Utils = {
           let prop = record._fields[0].properties
           //console.log('solutionId', prop)
           let solution = {
-            solutionId: record._fields[0].identity.low,
+            _id: record._fields[0].identity.low,
             hint: prop.hint,
             parts: prop.parts,
             context: prop.context,
@@ -222,10 +222,10 @@ export const Utils = {
       MATCH (q:Question) WITH q MATCH (q)-[r:Answer]-> (s:Solution) return q,s,r;`
       } else {
         query = `
-        MATCH (q:Question) WITH q ORDER BY toInteger(q.questionId) ASC LIMIT $count  MATCH (q)-[r:ANSWER]-> (s:Solution) return q,s,r;`
+        MATCH (q:Question) WITH q ORDER BY toInteger(q._id) ASC LIMIT $count  MATCH (q)-[r:Answer]-> (s:Solution) return q,s,r;`
       }
     } else {
-      query = `MATCH (q:Question {questionId:$questionId}) MATCH (q)-[r:ANSWER]-> (s:Solution) return q,s,r;`
+      query = `MATCH (q:Question {questionId:$_id}) MATCH (q)-[r:Answer]-> (s:Solution) return q,s,r;`
     }
 
     console.log('in getSolutionEdges resolver')
@@ -258,7 +258,7 @@ export const Utils = {
           console.log('Edge prop', prop)
 
           let question = {
-            questionId: queId,
+            _id: queId,
             start: queProp.start,
             context: queProp.context,
             space: queProp.space,
@@ -269,7 +269,7 @@ export const Utils = {
           }
 
           let solution = {
-            solutionId: solId,
+            _id: solId,
             hint: solProp.hint,
             parts: solProp.parts,
             context: solProp.context,
@@ -282,7 +282,7 @@ export const Utils = {
           }
 
           let edge = {
-            answerId: edgeId,
+            _id: edgeId,
             source_ref: prop.source_ref,
             raw_content: prop.raw_content,
             value: prop.value,
@@ -312,17 +312,17 @@ export const Utils = {
     console.log(object, info)
 
     let query
-    if (!params.questionId) {
+    if (!params._id) {
       if (!params.count) {
         query = `
       MATCH (q1:Question) WITH q1 MATCH (q1)-[r:Answer]-> (q2:Question) return q1,q2,r;`
       } else {
         query = `
-        MATCH (q2:Question)<-[r:ANSWER]-(q1:Question) WITH q1,q2,r ORDER BY toInteger(q2.questionId) ASC LIMIT $count-1 RETURN q1,q2,r`
+        MATCH (q2:Question)<-[r:Answer]-(q1:Question) WITH q1,q2,r ORDER BY toInteger(q2._id) ASC LIMIT $count-1 RETURN q1,q2,r`
       }
     } else {
       query = `
-      MATCH (q1:Question {questionId:$questionId}) WITH q1 MATCH (q1)-[r:ANSWER]-> (q2:Question) return q1,q2,r;`
+      MATCH (q1:Question {questionId:$_id}) WITH q1 MATCH (q1)-[r:Answer]-> (q2:Question) return q1,q2,r;`
     }
 
     console.log('in getQuestionEdges resolver')
@@ -348,7 +348,7 @@ export const Utils = {
           console.log('Edge', prop)
 
           let question1 = {
-            questionId: record._fields[0].identity.low,
+            _id: record._fields[0].identity.low,
             start: QueProp1.start,
             context: QueProp1.context,
             space: QueProp1.space,
@@ -359,7 +359,7 @@ export const Utils = {
           }
 
           let question2 = {
-            questionId: record._fields[1].identity.low,
+            _id: record._fields[1].identity.low,
             start: que2Prop.start,
             context: que2Prop.context,
             space: que2Prop.space,
@@ -370,7 +370,7 @@ export const Utils = {
           }
 
           let edge = {
-            answerId: uuidv4(),
+            _id: record._fields[2].identity.low,
             source_ref: prop.source_ref,
             raw_content: prop.raw_content,
             value: prop.value,
@@ -402,16 +402,16 @@ export const Utils = {
     console.log(object, info)
 
     let query
-    if(params.answerId){
-      query = `MATCH (q:Question)-[r:ANSWER]->() where r.answerId = $answerId return r;`
+    if(params._id){
+      query = `MATCH (q:Question)-[r:Answer]->() where r._id = $_id return r;`
     } else if (params.questionId) {
-      query = `MATCH (q:Question {questionId:$questionId}) WITH q MATCH (q)-[r:ANSWER]-() return r;`
+      query = `MATCH (q:Question {questionId:$_id}) WITH q MATCH (q)-[r:Answer]-() return r;`
     } else if (params.solutionId) {
-      query = `MATCH (s:Solution {solutionId:$solutionId}) WITH s MATCH (s)-[r:ANSWER]-() return r;`
+      query = `MATCH (s:Solution {solutionId:$_id}) WITH s MATCH (s)-[r:Answer]-() return r;`
     } else if (params.count && params.count > 0) {
-      query = `MATCH ()-[r:ANSWER]-() return r LIMIT $count;`
+      query = `MATCH ()-[r:Answer]-() return r LIMIT $count;`
     } else {
-      query = `MATCH ()-[r:ANSWER]-() return r;`
+      query = `MATCH ()-[r:Answer]-() return r;`
     }
 
     console.log('in getAllEdges resolver')
@@ -431,7 +431,7 @@ export const Utils = {
           console.log('Edges - ', edgeProp)
 
           let edge = {
-            answerId: edgeProp.answerId,
+            _id: record._fields[0].identity.low,
             source_ref: edgeProp.source_ref,
             raw_content: edgeProp.raw_content,
             value: edgeProp.value,

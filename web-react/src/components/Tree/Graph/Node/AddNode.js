@@ -59,7 +59,7 @@ function AddNode() {
       attachment_paths,
       ...params
     } = state
-    params.questionId = new Date().getTime()
+
     console.log(
       'Ignoring attributes for Question : ',
       parts,
@@ -89,7 +89,7 @@ function AddNode() {
 
   const addSolution = () => {
     var { start, ...params } = state
-    params.solutionId = new Date().getTime()
+  
     console.log('Ignoring attributes for Solution : ', start)
     console.log('Solution Details : ', { ...params })
     CreateSolution({

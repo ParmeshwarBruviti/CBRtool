@@ -24,8 +24,8 @@ function AddEdge() {
   const { loading, error, data } = useQuery(GET_ALL_NODES_EDGES)
   const [state, setState] = useState({
     type: '',
-    from: -1,
-    to: -1,
+    from: '',
+    to: '',
     answerId: '',
     end: '',
     raw_content: '',
@@ -124,9 +124,9 @@ function AddEdge() {
                 <option value="">Please Select</option>
                 {data?.getAllInOne.questions?.map((q, index) => {
                   return (
-                    <option key={index} value={q.questionId}>
+                    <option key={index} value={q._id}>
                       {' '}
-                      {q.questionId}{' '}
+                      {q._id}{' '}
                     </option>
                   )
                 })}
@@ -141,9 +141,9 @@ function AddEdge() {
                     (console.log('data is', data),
                     data?.getAllInOne.solutions?.map((s, index) => {
                       return (
-                        <option key={index} value={s.solutionId}>
+                        <option key={index} value={s._id}>
                           {' '}
-                          {s.solutionId}{' '}
+                          {s._id}{' '}
                         </option>
                       )
                     }))
@@ -159,9 +159,9 @@ function AddEdge() {
                     (console.log('data is', data),
                     data?.getAllInOne.questions?.map((q, index) => {
                       return (
-                        <option key={index} value={q.questionId}>
+                        <option key={index} value={q._id}>
                           {' '}
-                          {q.questionId}{' '}
+                          {q._id}{' '}
                         </option>
                       )
                     }))

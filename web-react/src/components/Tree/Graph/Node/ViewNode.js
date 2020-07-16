@@ -13,8 +13,8 @@ function Attribute(props) {
   return (
     <div className="row">
       <label>{label}</label>
-      <span className={`value${value.length === 0 ? ' empty' : ''}`}>
-        {value.length > 0 ? value : '-'}
+      <span className={`value${value?.length === 0 ? ' empty' : ''}`}>
+        {  value?.length > 0 ? value : '-'}
       </span>
     </div>
   )
@@ -23,7 +23,7 @@ function Attribute(props) {
 function ViewNode() {
   const params = useParams()
   const history = useHistory()
-  const { type = 'question', id } = params
+  const { type = 'question', _id } = params
 
   const keyMapping = {
     type: 'Type',
@@ -43,7 +43,7 @@ function ViewNode() {
     type === 'question' ? GET_QUESTION : GET_SOLUTION,
     {
       variables: {
-        id,
+        _id,
       },
     }
   )

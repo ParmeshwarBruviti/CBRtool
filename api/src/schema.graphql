@@ -1,8 +1,7 @@
-
 scalar JSON
 
 type Question {
-  questionId: ID!
+  id: String!
   start: Boolean
   context: String
   space: String
@@ -11,13 +10,13 @@ type Question {
   raw_content: String
   source_ref: String
   solutions: [Solution]
-    @cypher(statement: "MATCH (this)-[:ANSWER]->(sol:Solution) RETURN sol")
+    @cypher(statement: "MATCH (this)-[:Answer]->(sol:Solution) RETURN sol")
   solution_edges: [SolutionEdge]
   question_edges: [QuestionEdge]
 }
 
 type Solution {
-  solutionId: ID!
+  id: String!
   context: String
   space: String
   hint: String
@@ -30,51 +29,49 @@ type Solution {
   attachment_paths: [String]
 }
 
-type Edge @relation(name: "ANSWER"){
-  answerId: ID!
-  start: ID!
-  end: ID!
+type Edge @relation(name: "Answer") {
+  _id: String!
+  start: String!
+  end: String!
   source_ref: String
   raw_content: String
   value: String
   synonyms: String
 }
 
-type QuestionEdge @relation(name: "ANSWER") {
+type QuestionEdge @relation(name: "Answer") {
   from: Question
   to: Question
-  answerId: ID!
-  start: ID
-  end: ID
+  _id: String!
+  start: String
+  end: String
   source_ref: String
   raw_content: String
   value: String
   synonyms: String
 }
 
-type SolutionEdge @relation(name: "ANSWER") {
+type SolutionEdge @relation(name: "Answer") {
   from: Question
   to: Solution
-  answerId: ID!
-  start: ID
-  end: ID
+  _id: String!
+  start: String
+  end: String
   source_ref: String
   raw_content: String
   value: String
   synonyms: String
 }
-
-
 
 #MATCH (q:Question {questionId: 0})
 #OPTIONAL MATCH (es:Solution {solutionId: 20})
 #OPTIONAL MATCH  (eq:Question {questionId: 20})
-#MERGE (q)-[:ANSWER {source_ref: "8818987452753520504", raw_content: "Upright unit" ,value: "Upright unit",synonyms: ""}]->(es)
-#MERGE (q)-[:ANSWER {source_ref: "8818987452753520504", raw_content: "Upright unit" ,value: "Upright unit",synonyms: ""}]->(eq)
+#MERGE (q)-[:Answer {source_ref: "8818987452753520504", raw_content: "Upright unit" ,value: "Upright unit",synonyms: ""}]->(es)
+#MERGE (q)-[:Answer {source_ref: "8818987452753520504", raw_content: "Upright unit" ,value: "Upright unit",synonyms: ""}]->(eq)
 #RETURN q,eq,es
 type Mutation {
   mergeQuestionAnswer(
-    answerId: ID!
+    _id: ID!
     start: ID!
     end: ID!
     source_ref: String
@@ -83,10 +80,8 @@ type Mutation {
     synonyms: String
   ): Question
     @cypher(
-      statement: "MATCH (q:Question {questionId: $start}) OPTIONAL MATCH (es:Solution {solutionId: $end}) OPTIONAL MATCH  (eq:Question {questionId: $end}) MERGE (q)-[:ANSWER {answerId:$answerId, source_ref: $source_ref, raw_content: $raw_content ,value: $value,synonyms: $synonyms,start:$start,end:$end}]->(es) MERGE (q)-[:ANSWER {answerId:$answerId, source_ref: $source_ref, raw_content: $raw_content ,value: $value,synonyms: $synonyms,start:$start,end:$end}]->(eq) RETURN q"
+      statement: "MATCH (q:Question {_id: $start}) OPTIONAL MATCH (es:Solution {_id: $end}) OPTIONAL MATCH  (eq:Question {_id: $end}) MERGE (q)-[:Answer {_id:$_id, source_ref: $source_ref, raw_content: $raw_content ,value: $value,synonyms: $synonyms,start:$start,end:$end}]->(es) MERGE (q)-[:Answer {_id:$_id, source_ref: $source_ref, raw_content: $raw_content ,value: $value,synonyms: $synonyms,start:$start,end:$end}]->(eq) RETURN q"
     )
-
-    
 }
 
 type Query {
@@ -94,21 +89,21 @@ type Query {
 
   solutionCount: Int! @cypher(statement: "MATCH (s:Solution) RETURN COUNT(s)")
 
-  edgeCount:Int! @cypher(statement:"MATCH ()-[r:ANSWER]->() RETURN COUNT(r) ")
+  edgeCount: Int! @cypher(statement: "MATCH ()-[r:Answer]->() RETURN COUNT(r) ")
 
-  getAllInOne(count:Int): JSON
+  getAllInOne(count: Int): JSON
 
-  getQuestionEdgesOfQuestion(questionId:ID!):[QuestionEdge]  
+  getQuestionEdgesOfQuestion(_id: String!): [QuestionEdge]
 
-  getSolutionEdgesOfQuestion(questionId:ID!):[SolutionEdge] 
+  getSolutionEdgesOfQuestion(_id: String!): [SolutionEdge]
 
-  getEdgesOfQuestion(questionId:ID!):[Edge]
+  getEdgesOfQuestion(_id: String!): [Edge]
 
-  getEdgesOfSolution(solutionId:ID!):[Edge]
+  getEdgesOfSolution(_id: String!): [Edge]
 
-  getEdges(count:Int):[Edge]
+  getEdges(count: Int): [Edge]
 
-  Edge(answerId:ID!):[Edge]
+  Edge(_id: String!): [Edge]
 
-  executeRawQuery(query:String!):JSON
+  executeRawQuery(query: String!): JSON
 }

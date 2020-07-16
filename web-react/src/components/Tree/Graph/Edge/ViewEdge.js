@@ -23,10 +23,10 @@ function Attribute(props) {
 function ViewEdge() {
   const params = useParams()
   const history = useHistory()
-  const { type = 'edge', id } = params
+  const { type = 'edge', _id } = params
 
   const keyMapping = {
-    answerId: 'Answer Id',
+    _id: 'Answer Id',
     type: 'Type',
     start: 'Start',
     end: 'End',
@@ -38,7 +38,7 @@ function ViewEdge() {
 
   const { loading, error, data } = useQuery(GET_EDGE, {
     variables: {
-      id,
+      _id,
     },
   })
 

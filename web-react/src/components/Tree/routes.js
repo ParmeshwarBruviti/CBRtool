@@ -22,7 +22,7 @@ const routes = [
     exact: true,
   },
   {
-    path: '/tree/view-node/:type/:id',
+    path: '/tree/view-node/:type/:_id',
     component: ViewNode,
     exact: true,
   },
@@ -32,7 +32,7 @@ const routes = [
     exact: true,
   },
   {
-    path: '/tree/view-edge/:type/:id',
+    path: '/tree/view-edge/:type/:_id',
     component: ViewEdge,
     exact: true,
   },

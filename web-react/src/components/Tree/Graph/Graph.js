@@ -33,7 +33,7 @@ function Graph(props) {
         const edge = e.target.json().data
 
         history.push(
-          `/tree/view-edge/${(edge.type || 'na').toLowerCase()}/${edge.id}`,
+          `/tree/view-edge/${(edge.type || 'na').toLowerCase()}/${edge.name}`,
           {
             isDrawerOpen: true,
             // data: details

@@ -2,7 +2,6 @@ import gql from 'graphql-tag'
 
 const ADD_QUESTION_MUTATION = gql`
   mutation(
-    $questionId: ID!
     $content: String
     $context: String
     $hint: String
@@ -12,7 +11,6 @@ const ADD_QUESTION_MUTATION = gql`
     $start: Boolean
   ) {
     CreateQuestion(
-      questionId: $questionId
       content: $content
       context: $context
       hint: $hint
@@ -28,7 +26,6 @@ const ADD_QUESTION_MUTATION = gql`
 
 const ADD_SOLUTION_MUTATION = gql`
   mutation(
-    $solutionId: ID!
     $content: String
     $context: String
     $hint: String
@@ -41,7 +38,6 @@ const ADD_SOLUTION_MUTATION = gql`
     $attachment_paths: [String]
   ) {
     CreateSolution(
-      solutionId: $solutionId
       content: $content
       context: $context
       hint: $hint
@@ -59,10 +55,9 @@ const ADD_SOLUTION_MUTATION = gql`
 `
 
 const GET_QUESTION = gql`
-  query($id: ID!) {
-    Question(questionId: $id) {
+  query($_id: String!) {
+    Question(_id: $_id) {
       _id
-      questionId
       content
       context
       hint
@@ -75,10 +70,9 @@ const GET_QUESTION = gql`
 `
 
 const GET_SOLUTION = gql`
-  query($id: ID!) {
-    Solution(solutionId: $id) {
+  query($_id: String!) {
+    Solution(_id: $_id) {
       _id
-      solutionId
       content
       context
       hint

@@ -2,19 +2,19 @@ import gql from 'graphql-tag'
 
 const ADD_QUE_QUE_EDGE_MUTATION = gql`
   mutation(
-    $answerId: ID!
-    $end: ID
+    $_id: String!
+    $end: String
     $raw_content: String
     $source_ref: String
-    $start: ID
+    $start: String 
     $synonyms: String
     $value: String
-    $from: ID!
-    $to: ID!
+    $from: String!
+    $to: String!
   ) {
     AddQuestionQuestion_edges(
       data: {
-        answerId: $answerId
+        _id: $_id
         end: $end
         raw_content: $raw_content
         source_ref: $source_ref
@@ -22,10 +22,10 @@ const ADD_QUE_QUE_EDGE_MUTATION = gql`
         synonyms: $synonyms
         value: $value
       }
-      from: { questionId: $from }
-      to: { questionId: $to }
+      from: { _id: $from }
+      to: { _id: $to }
     ) {
-      answerId
+      _id
     }
   }
 `
@@ -33,19 +33,19 @@ const ADD_QUE_QUE_EDGE_MUTATION = gql`
 
 const ADD_QUE_SOL_EDGE_MUTATION = gql`
   mutation(
-    $answerId: ID!
-    $end: ID
+    $_id: String!
+    $end: String
     $raw_content: String
     $source_ref: String
-    $start: ID
+    $start: String
     $synonyms: String
     $value: String
-    $from: ID!
-    $to: ID!
+    $from: String!
+    $to: String!
   ) {
     AddQuestionSolution_edges(
       data: {
-        answerId: $answerId
+        _id: $_id
         end: $end
         raw_content: $raw_content
         source_ref: $source_ref
@@ -53,19 +53,19 @@ const ADD_QUE_SOL_EDGE_MUTATION = gql`
         synonyms: $synonyms
         value: $value
       }
-      from: { questionId: $from }
-      to: { solutionId: $to }
+      from: { _id: $from }
+      to: { _id: $to }
     ) {
-      answerId
+      _id
     }
   }
 `
 
 
 const GET_EDGE = gql`
-query($id: ID!) {
-  Edge(answerId: $id) {
-    answerId
+query($_id: String!) {
+  Edge(_id: $_id) {
+    _id
     end
     start
     raw_content
