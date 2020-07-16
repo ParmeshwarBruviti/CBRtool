@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 
 import { useHistory } from 'react-router-dom'
 
@@ -7,8 +7,9 @@ import CytoscapeComponent from 'react-cytoscapejs'
 import style from './style'
 
 function Graph(props) {
-  const [coreCy, setCoreCy] = useState(null),
-    history = useHistory()
+  const history = useHistory()
+
+  let coreCy = null
 
   useEffect(() => {
     const cy = coreCy
@@ -16,32 +17,36 @@ function Graph(props) {
     if (cy) {
       cy.on('click tap', 'node', (e) => {
         const node = e.target.id()
-        const details = props.nodes.find((n) => n.data.id === node)
-
-        history.push(
-          `/tree/view-node/${(
-            details.data.type || 'na'
-          ).toLowerCase()}/${node}`,
-          {
-            isDrawerOpen: true,
-            // data: details
-          }
-        )
+        const nodeDetails = props.nodes.find((n) => n.data.id === node)
+        if (nodeDetails) {
+          history.push(
+            `/tree/view-node/${nodeDetails.data.type.toLowerCase()}/${node}`,
+            {
+              isDrawerOpen: true,
+              // data: details
+            }
+          )
+        } else {
+          console.log('Not Found : ', nodeDetails)
+        }
       })
 
       cy.on('click tap', 'edge', (e) => {
         const edge = e.target.json().data
-
-        history.push(
-          `/tree/view-edge/${(edge.type || 'na').toLowerCase()}/${edge.id}`,
-          {
-            isDrawerOpen: true,
-            // data: details
-          }
-        )
+        if (edge) {
+          history.push(
+            `/tree/view-edge/${(edge.type || 'na').toLowerCase()}/${edge.id}`,
+            {
+              isDrawerOpen: true,
+              // data: details
+            }
+          )
+        } else {
+          console.log('Not Found : ', edge)
+        }
       })
     }
-  }, [coreCy])
+  }, [props.nodes.length, props.edges.length])
 
   const layout = {
     name: 'breadthfirst',
@@ -50,12 +55,10 @@ function Graph(props) {
 
   const data = [...props.nodes, ...props.edges]
 
-  console.log('Graph Data: ', data)
-
   return (
     <CytoscapeComponent
       cy={(cy) => {
-        setCoreCy(cy)
+        coreCy = cy
       }}
       className={`graph ${props.className}`}
       elements={CytoscapeComponent.normalizeElements(data)}

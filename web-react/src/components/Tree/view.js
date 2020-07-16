@@ -136,7 +136,7 @@ function TreeView() {
                   id: q.questionId,
                   name: q.raw_content,
                   type: 'Question',
-                  color: '#eb7abf',
+                  color: '#b7b7b7',
                   properties: {
                     ...q,
                   },
@@ -216,7 +216,7 @@ function TreeView() {
         <div className="view">Loading ...</div>
       ) : error ? (
         <div className="view">Getting Error</div>
-      ) : data ? (
+      ) : nodes || edges ? (
         <div className="view">
           <SubMenu className="menu" selectedMenu={selectedMenu} />
           <Graph
@@ -248,5 +248,7 @@ function TreeView() {
     </div>
   )
 }
+
+TreeView.displayName = 'TreeView'
 
 export default TreeView
