@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid'
+
 export const resolvers = {
   Query: {
     async executeRawQuery(object, params, context, info) {
@@ -28,7 +30,7 @@ export const resolvers = {
           info
         ),
       }
-      console.log(resultJson)
+      //console.log(resultJson)
       return resultJson
     },
 
@@ -133,7 +135,7 @@ export const Utils = {
           let QueProp = record._fields[0].properties
           //console.log('solutionId', prop)
           let question = {
-            questionId: QueProp.questionId,
+            questionId: record._fields[0].identity.low,
             start: QueProp.start,
             context: QueProp.context,
             space: QueProp.space,
@@ -183,7 +185,7 @@ export const Utils = {
           let prop = record._fields[0].properties
           //console.log('solutionId', prop)
           let solution = {
-            solutionId: prop.solutionId,
+            solutionId: record._fields[0].identity.low,
             hint: prop.hint,
             parts: prop.parts,
             context: prop.context,
@@ -217,7 +219,7 @@ export const Utils = {
     if (!params.questionId) {
       if (!params.count) {
         query = `
-      MATCH (q:Question) WITH q MATCH (q)-[r:ANSWER]-> (s:Solution) return q,s,r;`
+      MATCH (q:Question) WITH q MATCH (q)-[r:Answer]-> (s:Solution) return q,s,r;`
       } else {
         query = `
         MATCH (q:Question) WITH q ORDER BY toInteger(q.questionId) ASC LIMIT $count  MATCH (q)-[r:ANSWER]-> (s:Solution) return q,s,r;`
@@ -240,28 +242,34 @@ export const Utils = {
         }
 
         result.records.map((record) => {
-          let QueProp = record._fields[0].properties
-          console.log('Question', QueProp)
+          let queProp = record._fields[0].properties
+          let queId = record._fields[0].identity.low
+          console.log('Question identity', queId)
+          console.log('Question prop', queProp)
 
           let solProp = record._fields[1].properties
-          console.log('Solution', solProp)
+          let solId = record._fields[1].identity.low
+          console.log('Solution id', solId)
+          console.log('Solution prop', solProp)
 
+          let edgeId = uuidv4()
           let prop = record._fields[2].properties
-          console.log('Edge', prop)
+          console.log('Edge id', edgeId)
+          console.log('Edge prop', prop)
 
           let question = {
-            questionId: QueProp.questionId,
-            start: QueProp.start,
-            context: QueProp.context,
-            space: QueProp.space,
-            hint: QueProp.hint,
-            content: QueProp.content,
-            raw_content: QueProp.raw_content,
-            source_ref: QueProp.source_ref,
+            questionId: queId,
+            start: queProp.start,
+            context: queProp.context,
+            space: queProp.space,
+            hint: queProp.hint,
+            content: queProp.content,
+            raw_content: queProp.raw_content,
+            source_ref: queProp.source_ref,
           }
 
           let solution = {
-            solutionId: solProp.solutionId,
+            solutionId: solId,
             hint: solProp.hint,
             parts: solProp.parts,
             context: solProp.context,
@@ -274,7 +282,7 @@ export const Utils = {
           }
 
           let edge = {
-            answerId: prop.answerId,
+            answerId: edgeId,
             source_ref: prop.source_ref,
             raw_content: prop.raw_content,
             value: prop.value,
@@ -307,7 +315,7 @@ export const Utils = {
     if (!params.questionId) {
       if (!params.count) {
         query = `
-      MATCH (q1:Question) WITH q1 MATCH (q1)-[r:ANSWER]-> (q2:Question) return q1,q2,r;`
+      MATCH (q1:Question) WITH q1 MATCH (q1)-[r:Answer]-> (q2:Question) return q1,q2,r;`
       } else {
         query = `
         MATCH (q2:Question)<-[r:ANSWER]-(q1:Question) WITH q1,q2,r ORDER BY toInteger(q2.questionId) ASC LIMIT $count-1 RETURN q1,q2,r`
@@ -340,7 +348,7 @@ export const Utils = {
           console.log('Edge', prop)
 
           let question1 = {
-            questionId: QueProp1.questionId,
+            questionId: record._fields[0].identity.low,
             start: QueProp1.start,
             context: QueProp1.context,
             space: QueProp1.space,
@@ -351,7 +359,7 @@ export const Utils = {
           }
 
           let question2 = {
-            questionId: que2Prop.questionId,
+            questionId: record._fields[1].identity.low,
             start: que2Prop.start,
             context: que2Prop.context,
             space: que2Prop.space,
@@ -362,7 +370,7 @@ export const Utils = {
           }
 
           let edge = {
-            answerId: prop.answerId,
+            answerId: uuidv4(),
             source_ref: prop.source_ref,
             raw_content: prop.raw_content,
             value: prop.value,
