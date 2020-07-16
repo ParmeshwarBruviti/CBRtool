@@ -26,6 +26,30 @@ const ADD_QUESTION_MUTATION = gql`
   }
 `
 
+const GET_QUESTION = gql`
+  query($id: ID!) {
+    Question(questionId: $id) {
+      _id
+      questionId
+      content
+      context
+      hint
+      raw_content
+      source_ref
+      space
+      start
+    }
+  }
+`
+
+const DELETE_QUESTION = gql`
+  mutation($id: ID!) {
+    DeleteQuestion(questionId: $id) {
+      _id
+    }
+  }
+`
+
 const ADD_SOLUTION_MUTATION = gql`
   mutation(
     $solutionId: ID!
@@ -58,22 +82,6 @@ const ADD_SOLUTION_MUTATION = gql`
   }
 `
 
-const GET_QUESTION = gql`
-  query($id: ID!) {
-    Question(questionId: $id) {
-      _id
-      questionId
-      content
-      context
-      hint
-      raw_content
-      source_ref
-      space
-      start
-    }
-  }
-`
-
 const GET_SOLUTION = gql`
   query($id: ID!) {
     Solution(solutionId: $id) {
@@ -93,9 +101,19 @@ const GET_SOLUTION = gql`
   }
 `
 
+const DELETE_SOLUTION = gql`
+  mutation($id: ID!) {
+    DeleteSolution(soultionId: $id) {
+      _id
+    }
+  }
+`
+
 export {
   ADD_QUESTION_MUTATION,
-  ADD_SOLUTION_MUTATION,
   GET_QUESTION,
+  DELETE_QUESTION,
+  ADD_SOLUTION_MUTATION,
   GET_SOLUTION,
+  DELETE_SOLUTION,
 }
