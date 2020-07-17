@@ -66,7 +66,7 @@ export const resolvers = {
       return await Utils.getAllEdgesOf(object, params, context, info)
     },
 
-     /***
+    /***
      * to single edge of answerId / edgeId
      */
     async Edge(object, params, context, info) {
@@ -117,7 +117,7 @@ export const Utils = {
     let session = context.driver.session()
     let query
     if (!params.count) {
-      query = `MATCH (q:Question) RETURN q ;`
+      query = `MATCH (q:Question) RETURN q ORDER BY toInteger(q.questionId) ASC;`
     } else {
       query = `MATCH (q:Question) WITH q ORDER BY toInteger(q.questionId) ASC return q LIMIT $count;`
     }
@@ -165,7 +165,7 @@ export const Utils = {
     let query
     if (!params.count) {
       query = `
-      MATCH (s:Solution) RETURN s;`
+      MATCH (s:Solution) RETURN s ORDER BY toInteger(s.solutionId) ASC;`
     } else {
       query = `
        MATCH (q:Question) WITH q ORDER BY toInteger(q.questionId) ASC LIMIT $count MATCH (q)-[:ANSWER]->(s:Solution) RETURN DISTINCT s;`
@@ -394,7 +394,7 @@ export const Utils = {
     console.log(object, info)
 
     let query
-    if(params.answerId){
+    if (params.answerId) {
       query = `MATCH (q:Question)-[r:ANSWER]->() where r.answerId = $answerId return r;`
     } else if (params.questionId) {
       query = `MATCH (q:Question {questionId:$questionId}) WITH q MATCH (q)-[r:ANSWER]-() return r;`
