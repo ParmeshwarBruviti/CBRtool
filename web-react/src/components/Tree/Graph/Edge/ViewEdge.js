@@ -10,16 +10,14 @@ import {
   Done as DoneIcon,
 } from '@material-ui/icons'
 
-
 import { useQuery, useMutation } from '@apollo/react-hooks'
 
 import {
   GET_EDGE,
   DELETE_QUE_QUE_EDGE,
   DELETE_QUE_SOL_EDGE,
-  GET_ALL_NODES_EDGES
+  GET_ALL_NODES_EDGES,
 } from '../../../../queries'
-
 
 function Attribute(props) {
   const { label, value } = props
@@ -93,9 +91,8 @@ function ViewEdge() {
     if (type === 'questionedge') {
       DeleteQuestionQuestionEdge({
         variables: {
-          fromQuestionId:data.Edge[0].start,
-          toQuestionId:data.Edge[0].end
-
+          fromQuestionId: data.Edge[0].start,
+          toQuestionId: data.Edge[0].end,
         },
         refetchQueries: [
           {
@@ -113,8 +110,8 @@ function ViewEdge() {
     } else if (type === 'solutionedge') {
       DeleteQuestionSolutionEdge({
         variables: {
-          fromQuestionId:data.Edge[0].start,
-          toSolutionId:data.Edge[0].end
+          fromQuestionId: data.Edge[0].start,
+          toSolutionId: data.Edge[0].end,
         },
         refetchQueries: [
           {
@@ -142,7 +139,7 @@ function ViewEdge() {
         <div className="title">
           <span>View Edge Details</span>
           <div className="actions">
-          {details
+            {details
               ? [
                   <IconButton
                     key="ico-edit-1"
@@ -172,31 +169,31 @@ function ViewEdge() {
                   </IconButton>,
                 ]
               : null}
-          <IconButton
-            aria-label="more"
-            aria-controls="long-menu"
-            aria-haspopup="true"
-            size="small"
-            onClick={() => {
-              history.push('/tree', { isDrawerOpen: false })
-            }}
-          >
-            <CancelIcon fontSize="small"/>
-          </IconButton>
+            <IconButton
+              aria-label="more"
+              aria-controls="long-menu"
+              aria-haspopup="true"
+              size="small"
+              onClick={() => {
+                history.push('/tree', { isDrawerOpen: false })
+              }}
+            >
+              <CancelIcon fontSize="small" />
+            </IconButton>
+          </div>
         </div>
       </div>
-      </div>
       <div className="drawer-content">
-      {deleted ? (
+        {deleted ? (
           <div>
             <h5>The {type} is deleted</h5>
             <div>
               <b>from: </b>
-              { data.Edge[0].start}
+              {data.Edge[0].start}
             </div>
             <div>
               <b>to: </b>
-              { data.Edge[0].end}
+              {data.Edge[0].end}
             </div>
             <Button
               variant="contained"
@@ -218,11 +215,9 @@ function ViewEdge() {
               <div>Getting Error</div>
             ) : (
               <form className="form" autoComplete="off">
-                
-             {details?.map((d, i) => (
+                {details?.map((d, i) => (
                   <Attribute key={`key-${i}`} label={d.label} value={d.value} />
                 ))}
-      
               </form>
             )}
           </div>
