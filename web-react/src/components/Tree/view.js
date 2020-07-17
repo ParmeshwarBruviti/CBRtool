@@ -136,7 +136,7 @@ function TreeView() {
                   id: q.questionId,
                   name: q.raw_content,
                   type: 'Question',
-                  color: '#b7b7b7',
+                  color: '#F79767',
                   properties: {
                     ...q,
                   },
@@ -152,7 +152,7 @@ function TreeView() {
                   id: s.solutionId,
                   name: s.raw_content,
                   type: 'Solution',
-                  color: '#7acc7a',
+                  color: '#57C7E3',
                   properties: {
                     ...s,
                   },
