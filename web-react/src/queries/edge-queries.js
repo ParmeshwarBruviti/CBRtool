@@ -30,7 +30,6 @@ const ADD_QUE_QUE_EDGE_MUTATION = gql`
   }
 `
 
-
 const ADD_QUE_SOL_EDGE_MUTATION = gql`
   mutation(
     $answerId: ID!
@@ -61,23 +60,56 @@ const ADD_QUE_SOL_EDGE_MUTATION = gql`
   }
 `
 
-
 const GET_EDGE = gql`
-query($id: ID!) {
-  Edge(answerId: $id) {
-    answerId
-    end
-    start
-    raw_content
-    source_ref
-    synonyms
-    value
+  query($id: ID!) {
+    Edge(answerId: $id) {
+      answerId
+      end
+      start
+      raw_content
+      source_ref
+      synonyms
+      value
+    }
   }
-}
 `
 
-export { 
+const DELETE_QUE_QUE_EDGE = gql`
+  mutation($fromQuestionId: ID!, $toQuestionId: ID!) {
+    RemoveQuestionQuestion_edges(
+      from: { questionId: $fromQuestionId }
+      to: { questionId: $toQuestionId }
+    ) {
+      from {
+        questionId
+      }
+      to {
+        questionId
+      }
+    }
+  }
+`
+
+const DELETE_QUE_SOL_EDGE = gql`
+  mutation($fromQuestionId: ID!, $toSolutionId: ID!) {
+    RemoveQuestionSolution_edges(
+      from: { questionId: $fromQuestionId }
+      to: { solutionId: $toSolutionId }
+    ) {
+      from {
+        questionId
+      }
+      to {
+        solutionId
+      }
+    }
+  }
+`
+
+export {
+  GET_EDGE,
   ADD_QUE_QUE_EDGE_MUTATION,
   ADD_QUE_SOL_EDGE_MUTATION,
-  GET_EDGE 
-  }
+  DELETE_QUE_QUE_EDGE,
+  DELETE_QUE_SOL_EDGE,
+}
