@@ -76,8 +76,37 @@ query($id: ID!) {
 }
 `
 
+const DELETE_QUE_QUE_EDGE = gql`
+mutation($fromQuestionId:ID!,$toQuestionId:ID! ) {
+  RemoveQuestionQuestion_edges(from: {questionId: $fromQuestionId}, to: {questionId: $toQuestionId}) {
+    from {
+      questionId
+    }
+    to {
+      questionId
+    }
+  }
+}
+
+`
+
+const DELETE_QUE_SOL_EDGE = gql`
+mutation($fromQuestionId:ID!,$toSolutionId:ID! ) {
+  RemoveQuestionSolution_edges(from: {questionId: $fromQuestionId}, to: {solutionId: $toSolutionId}) {
+    from {
+      questionId
+    }
+    to {
+      solutionId
+    }
+  }
+}
+`
+
 export { 
+  GET_EDGE,
   ADD_QUE_QUE_EDGE_MUTATION,
   ADD_QUE_SOL_EDGE_MUTATION,
-  GET_EDGE 
+  DELETE_QUE_QUE_EDGE,
+  DELETE_QUE_SOL_EDGE,
   }
