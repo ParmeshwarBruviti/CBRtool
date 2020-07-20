@@ -53,15 +53,16 @@ function Graph(props) {
     roots: `#${props.startNodeId}`,
   }
 
-  const data = [...props.nodes, ...props.edges]
-
   return (
     <CytoscapeComponent
       cy={(cy) => {
         coreCy = cy
       }}
       className={`graph ${props.className}`}
-      elements={CytoscapeComponent.normalizeElements(data)}
+      elements={CytoscapeComponent.normalizeElements([
+        ...props.nodes,
+        ...props.edges,
+      ])}
       stylesheet={style}
       layout={layout}
     />
