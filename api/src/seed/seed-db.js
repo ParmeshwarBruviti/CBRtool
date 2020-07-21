@@ -14,6 +14,7 @@ const {
 } = process.env
 
 const uri = `http://${host}:${port}${path}`
+//const uri = 'http://api:4001/graphql'
 
 const client = new ApolloClient({
   link: new HttpLink({ uri, fetch }),
@@ -31,7 +32,9 @@ const runMutations = async () => {
           variables,
         })
         .catch((e) => {
-          console.log('Exception ', e)
+          console.log('client---------->', client)
+          console.log('uri----------> ', uri)
+          console.log('Exception --- > ', e)
           throw new Error(e)
         })
     })
@@ -42,4 +45,6 @@ runMutations()
   .then(() => {
     console.log('Database seeded!')
   })
-  .catch((e) => console.error(e))
+  .catch((e) => {
+    console.error(e)
+  })
