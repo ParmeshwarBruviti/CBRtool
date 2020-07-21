@@ -10,18 +10,18 @@ import { useQuery } from '@apollo/react-hooks'
 
 import { useMutation } from '@apollo/react-hooks'
 
-import { v4 as uuidv4 } from 'uuid'
+import * as Utility from '../../../../common/utility'
 
 import {
   ADD_QUE_QUE_EDGE_MUTATION,
   ADD_QUE_SOL_EDGE_MUTATION,
-} from '../../../../queries/edge-queries'
-
-import { GET_ALL_NODES_EDGES } from '../../../../queries/custom-queries'
+  GET_ALL_NODES_EDGES,
+  GET_IDS_Of_QUESTION_AND_SOLUTION,
+} from '../../../../queries'
 
 function AddEdge() {
   const history = useHistory()
-  const { loading, error, data } = useQuery(GET_ALL_NODES_EDGES)
+  const { loading, error, data } = useQuery(GET_IDS_Of_QUESTION_AND_SOLUTION)
   const [state, setState] = useState({
     type: '',
     from: -1,
@@ -43,7 +43,7 @@ function AddEdge() {
 
   const addRelationEdge = () => {
     var { ...params } = state
-    params.answerId = uuidv4()
+    params.answerId = Utility.getUUID()
     params.start = params.from
     params.end = params.to
 
@@ -122,7 +122,7 @@ function AddEdge() {
               <label>From Question</label>
               <select id="optType" name="from" onChange={update} required>
                 <option value="">Please Select</option>
-                {data?.getAllInOne.questions?.map((q, index) => {
+                {data.Question.map((q, index) => {
                   return (
                     <option key={index} value={q.questionId}>
                       {' '}
@@ -137,17 +137,14 @@ function AddEdge() {
                 <label>To Solution</label>
                 <select id="optType" name="to" onChange={update} required>
                   <option value="">Please Select</option>
-                  {
-                    (console.log('data is', data),
-                    data?.getAllInOne.solutions?.map((s, index) => {
-                      return (
-                        <option key={index} value={s.solutionId}>
-                          {' '}
-                          {s.solutionId}{' '}
-                        </option>
-                      )
-                    }))
-                  }
+                  {data.Solution.map((s, index) => {
+                    return (
+                      <option key={index} value={s.solutionId}>
+                        {' '}
+                        {s.solutionId}{' '}
+                      </option>
+                    )
+                  })}
                 </select>
               </div>
             ) : (
@@ -155,17 +152,14 @@ function AddEdge() {
                 <label>To Question</label>
                 <select id="optType" name="to" onChange={update} required>
                   <option value="">Please Select</option>
-                  {
-                    (console.log('data is', data),
-                    data?.getAllInOne.questions?.map((q, index) => {
-                      return (
-                        <option key={index} value={q.questionId}>
-                          {' '}
-                          {q.questionId}{' '}
-                        </option>
-                      )
-                    }))
-                  }
+                  {data.Question.map((q, index) => {
+                    return (
+                      <option key={index} value={q.questionId}>
+                        {' '}
+                        {q.questionId}{' '}
+                      </option>
+                    )
+                  })}
                 </select>
               </div>
             )}
@@ -185,8 +179,8 @@ function AddEdge() {
             <div className="row">
               <label>Synonyms</label>
               <input
-                id="txtContext"
-                name="context"
+                id="txtSynonyms"
+                name="synonyms"
                 type="text"
                 onChange={update}
               />

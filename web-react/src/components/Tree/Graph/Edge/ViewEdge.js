@@ -89,6 +89,22 @@ function ViewEdge() {
     }
   }
 
+  const editEdge = () => {
+    if (type === 'questionedge') {
+      history.push(
+        `/tree/edit-edge/${type.toLowerCase()}/${data.Edge[0].answerId}`,
+        { isDrawerOpen: true }
+      )
+    } else if (type === 'solutionedge') {
+      history.push(
+        `/tree/edit-edge/${type.toLowerCase()}/${data.Edge[0].answerId}`,
+        { isDrawerOpen: true }
+      )
+    } else {
+      console.log('Unkonwn type : ', type)
+    }
+  }
+
   const deleteEdge = () => {
     if (type === 'questionedge') {
       DeleteQuestionQuestionEdge({
@@ -155,7 +171,7 @@ function ViewEdge() {
                     color="primary"
                     size="small"
                     onClick={() => {
-                      console.log('Edit This')
+                      editEdge()
                     }}
                   >
                     <EditIcon fontSize="small" />
