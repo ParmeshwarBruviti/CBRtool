@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { useParams, useHistory } from 'react-router-dom'
 
 import { IconButton, Button } from '@material-ui/core'
 import {
   Cancel as CancelIcon,
+  DeleteForever as DeletedIcon,
   Delete as DeleteIcon,
   Edit as EditIcon,
   Done as DoneIcon,
@@ -31,25 +32,26 @@ function Attribute(props) {
   )
 }
 
+const keyMapping = {
+  answerId: 'Answer Id',
+  type: 'Type',
+  start: 'Start',
+  end: 'End',
+  synonyms: 'Synonyms',
+  value: 'Value',
+  raw_content: 'Raw Content',
+  source_ref: 'Source Ref',
+}
+
 function ViewEdge() {
   const [deleted, setDeleted] = useState(false)
+  const [edgeData, setEdgeData] = useState([])
   const params = useParams()
   const history = useHistory()
   const { type = 'edge', id } = params
 
   const [DeleteQuestionQuestionEdge] = useMutation(DELETE_QUE_QUE_EDGE)
   const [DeleteQuestionSolutionEdge] = useMutation(DELETE_QUE_SOL_EDGE)
-
-  const keyMapping = {
-    answerId: 'Answer Id',
-    type: 'Type',
-    start: 'Start',
-    end: 'End',
-    synonyms: 'Synonyms',
-    value: 'Value',
-    raw_content: 'Raw Content',
-    source_ref: 'Source Ref',
-  }
 
   const { loading, error, data } = useQuery(GET_EDGE, {
     variables: {
@@ -102,6 +104,7 @@ function ViewEdge() {
       })
         .then((res) => {
           setDeleted(true)
+          setEdgeData([])
           console.log('Question is Deleted : ', res)
         })
         .catch((err) => {
@@ -121,6 +124,7 @@ function ViewEdge() {
       })
         .then((res) => {
           setDeleted(true)
+          setEdgeData([])
           console.log('Solution is Deleted : ', res)
         })
         .catch((err) => {
@@ -131,15 +135,17 @@ function ViewEdge() {
     }
   }
 
-  let details = transformData()
+  useEffect(() => {
+    setEdgeData(transformData())
+  }, [data])
 
   return (
     <div className="drawer-container">
       <div className="drawer-header">
         <div className="title">
-          <span>View Edge Details</span>
+          <span>{deleted ? 'Edge Deleted' : 'View Edge Details'}</span>
           <div className="actions">
-            {details
+            {edgeData && edgeData.length > 0
               ? [
                   <IconButton
                     key="ico-edit-1"
@@ -185,27 +191,33 @@ function ViewEdge() {
       </div>
       <div className="drawer-content">
         {deleted ? (
-          <div>
-            <h5>The {type} is deleted</h5>
+          <div className="delete-container">
+            <DeletedIcon className="delete-icon" fontSize="large" />
+            <span className="delete-msg">
+              The {type === 'questionedge' ? 'question edge' : 'solution edge'}{' '}
+              is deleted
+            </span>
             <div>
-              <b>from: </b>
+              <b>From: </b>
               {data.Edge[0].start}
             </div>
             <div>
               <b>to: </b>
               {data.Edge[0].end}
             </div>
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              startIcon={<DoneIcon />}
-              onClick={() => {
-                history.push('/tree', { isDrawerOpen: false })
-              }}
-            >
-              Ok
-            </Button>
+            <div>
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                startIcon={<DoneIcon />}
+                onClick={() => {
+                  history.push('/tree', { isDrawerOpen: false })
+                }}
+              >
+                Ok
+              </Button>
+            </div>
           </div>
         ) : loading ? (
           <div>Loading ...</div>
@@ -215,9 +227,17 @@ function ViewEdge() {
               <div>Getting Error</div>
             ) : (
               <form className="form" autoComplete="off">
-                {details?.map((d, i) => (
-                  <Attribute key={`key-${i}`} label={d.label} value={d.value} />
-                ))}
+                {edgeData && edgeData.length ? (
+                  edgeData.map((d, i) => (
+                    <Attribute
+                      key={`key-${i}`}
+                      label={d.label}
+                      value={d.value}
+                    />
+                  ))
+                ) : (
+                  <div>No Data Available for {id}</div>
+                )}
               </form>
             )}
           </div>

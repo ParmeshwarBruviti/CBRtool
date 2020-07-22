@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { useParams, useHistory } from 'react-router-dom'
 
 import { IconButton, Button } from '@material-ui/core'
 import {
   Cancel as CancelIcon,
+  DeleteForever as DeletedIcon,
   Delete as DeleteIcon,
   Edit as EditIcon,
   Done as DoneIcon,
@@ -31,27 +32,28 @@ function Attribute(props) {
   )
 }
 
+const keyMapping = {
+  type: 'Type',
+  raw_content: 'Raw Content',
+  hint: 'Hint',
+  content: 'Content',
+  context: 'Context',
+  source_ref: 'Source Ref',
+  space: 'Space',
+  parts: 'Parts',
+  attachment_types: 'Attachment Types',
+  attachment_titles: 'Attachment Titles',
+  attachment_paths: 'Attachment Paths',
+}
+
 function ViewNode() {
   const [deleted, setDeleted] = useState(false),
+    [nodeData, setNodeData] = useState([]),
     params = useParams(),
     history = useHistory(),
     { type = 'question', id } = params,
     [DeleteQuestion] = useMutation(DELETE_QUESTION),
     [DeleteSolution] = useMutation(DELETE_SOLUTION)
-
-  const keyMapping = {
-    type: 'Type',
-    raw_content: 'Raw Content',
-    hint: 'Hint',
-    content: 'Content',
-    context: 'Context',
-    source_ref: 'Source Ref',
-    space: 'Space',
-    parts: 'Parts',
-    attachment_types: 'Attachment Types',
-    attachment_titles: 'Attachment Titles',
-    attachment_paths: 'Attachment Paths',
-  }
 
   const { loading, error, data } = useQuery(
     type === 'question' ? GET_QUESTION : GET_SOLUTION,
@@ -81,12 +83,32 @@ function ViewNode() {
             },
             [
               {
+                label: type === 'question' ? 'Question Id' : 'Solutioin Id',
+                value: resp.questionId || resp.solutionId,
+              },
+              {
                 label: 'Type',
                 value: type,
               },
             ]
           )
-        : null
+        : []
+    }
+  }
+
+  const editNode = () => {
+    if (type === 'question') {
+      history.push(
+        `/tree/edit-node/${type.toLowerCase()}/${data.Question[0].questionId}`,
+        { isDrawerOpen: true }
+      )
+    } else if (type === 'solution') {
+      history.push(
+        `/tree/edit-node/${type.toLowerCase()}/${data.Solution[0].solutionId}`,
+        { isDrawerOpen: true }
+      )
+    } else {
+      console.log('Unkonwn type : ', type)
     }
   }
 
@@ -104,6 +126,7 @@ function ViewNode() {
       })
         .then((res) => {
           setDeleted(true)
+          setNodeData([])
           console.log('Question is Deleted : ', res)
         })
         .catch((err) => {
@@ -122,6 +145,7 @@ function ViewNode() {
       })
         .then((res) => {
           setDeleted(true)
+          setNodeData([])
           console.log('Solution is Deleted : ', res)
         })
         .catch((err) => {
@@ -132,15 +156,18 @@ function ViewNode() {
     }
   }
 
-  const details = transformData()
+  useEffect(() => {
+    // const details = transformData()
+    setNodeData(transformData())
+  }, [data])
 
   return (
     <div className="drawer-container">
       <div className="drawer-header">
         <div className="title">
-          <span>View Node Details</span>
+          <span>{deleted ? 'Node Deleted' : 'View Node Details'}</span>
           <div className="actions">
-            {details
+            {nodeData && nodeData.length > 0
               ? [
                   <IconButton
                     key="ico-edit-1"
@@ -150,7 +177,7 @@ function ViewNode() {
                     color="primary"
                     size="small"
                     onClick={() => {
-                      console.log('Edit This')
+                      editNode()
                     }}
                   >
                     <EditIcon fontSize="small" />
@@ -186,8 +213,9 @@ function ViewNode() {
       </div>
       <div className="drawer-content">
         {deleted ? (
-          <div>
-            <h5>The {type} is deleted</h5>
+          <div className="delete-container">
+            <DeletedIcon className="delete-icon" fontSize="large" />
+            <span className="delete-msg">The {type} is deleted</span>
             <div>
               <b>Id: </b>
               {type === 'question'
@@ -200,17 +228,19 @@ function ViewNode() {
                 ? data.Question[0].content
                 : data.Solution[0].content}
             </div>
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              startIcon={<DoneIcon />}
-              onClick={() => {
-                history.push('/tree', { isDrawerOpen: false })
-              }}
-            >
-              Ok
-            </Button>
+            <div>
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                startIcon={<DoneIcon />}
+                onClick={() => {
+                  history.push('/tree', { isDrawerOpen: false })
+                }}
+              >
+                Ok
+              </Button>
+            </div>
           </div>
         ) : loading ? (
           <div>Loading ...</div>
@@ -218,8 +248,8 @@ function ViewNode() {
           <div>Getting Error</div>
         ) : (
           <form className="form" autoComplete="off">
-            {details ? (
-              details.map((d, i) => (
+            {nodeData && nodeData.length ? (
+              nodeData.map((d, i) => (
                 <Attribute key={`key-${i}`} label={d.label} value={d.value} />
               ))
             ) : (

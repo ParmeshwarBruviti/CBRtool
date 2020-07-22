@@ -76,7 +76,12 @@ function SubMenu(props) {
 
 function TreeView() {
   const history = useHistory()
-  const [isDrawerOpen, setDrwaerState] = React.useState(false)
+  const [isDrawerOpen, setDrwaerState] = useState(false)
+  const [graphData, setGraphData] = useState({
+    nodes: [],
+    edges: [],
+    startNodeId: '',
+  })
 
   const { loading, error, data } = useQuery(GET_ALL_NODES_EDGES)
 
@@ -111,12 +116,18 @@ function TreeView() {
     setDrwaerState(open)
     if (type === 'Add Node') {
       history.push('/tree/add-node', {
-        start: !(nodes.length || 0),
+        start: !(graphData.nodes.length || 0),
       })
     } else if (type === 'Add Edge') {
       history.push('/tree/add-edge')
     }
   }
+
+  useEffect(() => {
+    // const { nodes = [], edges = [], startNodeId = '' } = processDataForGraph();
+    setGraphData(processDataForGraph())
+    console.log('state :', graphData)
+  }, [data])
 
   const processDataForGraph = () => {
     let startNodeId = ''
@@ -205,10 +216,12 @@ function TreeView() {
         startNodeId,
       }
     }
-    return {}
+    return {
+      nodes: [],
+      edges: [],
+      startNodeId: '',
+    }
   }
-
-  const { nodes = [], edges = [], startNodeId = '' } = processDataForGraph()
 
   return (
     <div className="tree-view">
@@ -216,14 +229,14 @@ function TreeView() {
         <div className="view">Loading ...</div>
       ) : error ? (
         <div className="view">Getting Error</div>
-      ) : nodes || edges ? (
+      ) : graphData.nodes.length || graphData.edges.length ? (
         <div className="view">
           <SubMenu className="menu" selectedMenu={selectedMenu} />
           <Graph
             className="right-panel"
-            nodes={nodes}
-            edges={edges}
-            startNodeId={startNodeId}
+            nodes={graphData.nodes}
+            edges={graphData.edges}
+            startNodeId={graphData.startNodeId}
           />
         </div>
       ) : (
@@ -233,7 +246,7 @@ function TreeView() {
         anchor="right"
         open={isDrawerOpen}
         onClose={() => {
-          // setDrwaerState(false);
+          setDrwaerState(false)
         }}
         onOpen={toggleDrawer(true)}
       >

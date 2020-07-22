@@ -2,6 +2,7 @@ import React from 'react'
 
 import AddNode from './Graph/Node/AddNode'
 import ViewNode from './Graph/Node/ViewNode'
+import EditNode from './Graph/Node/EditNode'
 
 import AddEdge from './Graph/Edge/AddEdge'
 import ViewEdge from './Graph/Edge/ViewEdge'
@@ -24,6 +25,11 @@ const routes = [
   {
     path: '/tree/view-node/:type/:id',
     component: ViewNode,
+    exact: true,
+  },
+  {
+    path: '/tree/edit-node/:type/:id',
+    component: EditNode,
     exact: true,
   },
   {
