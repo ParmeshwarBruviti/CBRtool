@@ -33,14 +33,38 @@ function Attribute(props) {
 }
 
 const keyMapping = {
-  answerId: 'Answer Id',
-  type: 'Type',
-  start: 'Start',
-  end: 'End',
-  synonyms: 'Synonyms',
-  value: 'Value',
-  raw_content: 'Raw Content',
-  source_ref: 'Source Ref',
+  answerId: {
+    label: 'Answer Id',
+    index: 0,
+  },
+  type: {
+    label: 'Type',
+    index: 1,
+  },
+  start: {
+    label: 'Start',
+    index: 2,
+  },
+  end: {
+    label: 'End',
+    index: 3,
+  },
+  synonyms: {
+    label: 'Synonyms',
+    index: 6,
+  },
+  value: {
+    label: 'Value',
+    index: 5,
+  },
+  raw_content: {
+    label: 'Raw Content',
+    index: 4,
+  },
+  source_ref: {
+    label: 'Source Ref',
+    index: 7,
+  },
 }
 
 function ViewEdge() {
@@ -65,27 +89,47 @@ function ViewEdge() {
     } else {
       if (data.Edge) {
         const resp = data.Edge[0]
-        return Object.keys(resp).reduce(
-          (accumulator, currentValue) => {
-            if (!keyMapping[currentValue]) return accumulator
-            return [
-              ...accumulator,
+        return Object.keys(resp)
+          .reduce(
+            (accumulator, currentValue) => {
+              if (!keyMapping[currentValue]) return accumulator
+              return [
+                ...accumulator,
+                {
+                  label: keyMapping[currentValue].label,
+                  index: keyMapping[currentValue].index,
+                  value: resp[currentValue],
+                },
+              ]
+            },
+            [
               {
-                label: keyMapping[currentValue],
-                value: resp[currentValue],
+                label: keyMapping['type'].label,
+                index: keyMapping['type'].index,
+                value: type,
               },
             ]
-          },
-          [
-            {
-              label: 'Type',
-              value: type,
-            },
-          ]
-        )
+          )
+          .sort((a, b) => a.index - b.index)
       } else {
         console.log('data not found')
       }
+    }
+  }
+
+  const editEdge = () => {
+    if (type === 'questionedge') {
+      history.push(
+        `/tree/edit-edge/${type.toLowerCase()}/${data.Edge[0].answerId}`,
+        { isDrawerOpen: true }
+      )
+    } else if (type === 'solutionedge') {
+      history.push(
+        `/tree/edit-edge/${type.toLowerCase()}/${data.Edge[0].answerId}`,
+        { isDrawerOpen: true }
+      )
+    } else {
+      console.log('Unkonwn type : ', type)
     }
   }
 
@@ -155,7 +199,7 @@ function ViewEdge() {
                     color="primary"
                     size="small"
                     onClick={() => {
-                      console.log('Edit This')
+                      editEdge()
                     }}
                   >
                     <EditIcon fontSize="small" />

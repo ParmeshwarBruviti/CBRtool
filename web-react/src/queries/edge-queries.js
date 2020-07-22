@@ -106,10 +106,68 @@ const DELETE_QUE_SOL_EDGE = gql`
   }
 `
 
+const MERGE_QUE_QUE_EDGE_MUTATION = gql`
+  mutation(
+    $answerId: ID!
+    $end: ID!
+    $raw_content: String
+    $source_ref: String
+    $start: ID!
+    $synonyms: String
+    $value: String
+  ) {
+    MergeQuestionQuestion_edges(
+      data: {
+        answerId: $answerId
+        end: $end
+        raw_content: $raw_content
+        source_ref: $source_ref
+        start: $start
+        synonyms: $synonyms
+        value: $value
+      }
+      from: { questionId: $start }
+      to: { questionId: $end }
+    ) {
+      answerId
+    }
+  }
+`
+
+const MERGE_QUE_SOL_EDGE_MUTATION = gql`
+  mutation(
+    $answerId: ID!
+    $end: ID!
+    $raw_content: String
+    $source_ref: String
+    $start: ID!
+    $synonyms: String
+    $value: String
+  ) {
+    MergeQuestionSolution_edges(
+      data: {
+        answerId: $answerId
+        end: $end
+        raw_content: $raw_content
+        source_ref: $source_ref
+        start: $start
+        synonyms: $synonyms
+        value: $value
+      }
+      from: { questionId: $start }
+      to: { solutionId: $end }
+    ) {
+      answerId
+    }
+  }
+`
+
 export {
   GET_EDGE,
   ADD_QUE_QUE_EDGE_MUTATION,
   ADD_QUE_SOL_EDGE_MUTATION,
   DELETE_QUE_QUE_EDGE,
   DELETE_QUE_SOL_EDGE,
+  MERGE_QUE_QUE_EDGE_MUTATION,
+  MERGE_QUE_SOL_EDGE_MUTATION,
 }

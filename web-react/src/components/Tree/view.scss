@@ -13,6 +13,7 @@
     .menu {
       position: absolute;
       z-index: 999;
+      right: 0;
     }
     .right-panel {
       padding: ($default-padding - 5px);
@@ -21,6 +22,9 @@
       bottom: 0;
       right: 0;
       left: 0;
+      &.mouseover {
+        cursor: pointer;
+      }
     }
   }
 }

@@ -115,8 +115,14 @@ function TreeView() {
   const selectedMenu = (open, type) => {
     setDrwaerState(open)
     if (type === 'Add Node') {
+      const nextId =
+        graphData.nodes.reduce(
+          (max, cur) => Math.max(max, parseInt(cur.data.id)),
+          0
+        ) + 1
       history.push('/tree/add-node', {
         start: !(graphData.nodes.length || 0),
+        id: nextId,
       })
     } else if (type === 'Add Edge') {
       history.push('/tree/add-edge')
@@ -231,13 +237,13 @@ function TreeView() {
         <div className="view">Getting Error</div>
       ) : graphData.nodes.length || graphData.edges.length ? (
         <div className="view">
-          <SubMenu className="menu" selectedMenu={selectedMenu} />
           <Graph
             className="right-panel"
             nodes={graphData.nodes}
             edges={graphData.edges}
             startNodeId={graphData.startNodeId}
           />
+          <SubMenu className="menu" selectedMenu={selectedMenu} />
         </div>
       ) : (
         <div className="view">Empty Data</div>
@@ -246,7 +252,7 @@ function TreeView() {
         anchor="right"
         open={isDrawerOpen}
         onClose={() => {
-          setDrwaerState(false)
+          history.push('/tree', { isDrawerOpen: false })
         }}
         onOpen={toggleDrawer(true)}
       >

@@ -6,6 +6,7 @@ import EditNode from './Graph/Node/EditNode'
 
 import AddEdge from './Graph/Edge/AddEdge'
 import ViewEdge from './Graph/Edge/ViewEdge'
+import EditEdge from './Graph/Edge/EditEdge'
 
 function DefaultSection() {
   return <h2>Please select Node/Edge</h2>
@@ -40,6 +41,11 @@ const routes = [
   {
     path: '/tree/view-edge/:type/:id',
     component: ViewEdge,
+    exact: true,
+  },
+  {
+    path: '/tree/edit-edge/:type/:id',
+    component: EditEdge,
     exact: true,
   },
 ]

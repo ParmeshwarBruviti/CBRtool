@@ -17,8 +17,13 @@ import { GET_ALL_NODES_EDGES } from '../../../../queries/custom-queries'
 
 function AddNode() {
   const history = useHistory()
-  const [state, setState] = useState({
-    start: history.location.state.start,
+  const {
+    location: {
+      state: { start, id },
+    },
+  } = history
+  const [nodeData, setNodeData] = useState({
+    start: start,
     type: '',
     raw_content: '',
     hint: '',
@@ -45,9 +50,9 @@ function AddNode() {
       ].indexOf(target.name) > -1
     ) {
       const val = target.value.trim().split(',')
-      setState({ ...state, [target.name]: val })
+      setNodeData({ ...nodeData, [target.name]: val })
     } else {
-      setState({ ...state, [target.name]: target.value.trim() })
+      setNodeData({ ...nodeData, [target.name]: target.value.trim() })
     }
   }
 
@@ -58,8 +63,8 @@ function AddNode() {
       attachment_titles,
       attachment_paths,
       ...params
-    } = state
-    params.questionId = new Date().getTime()
+    } = nodeData
+    params.questionId = id ? id : new Date().getTime()
     console.log(
       'Ignoring attributes for Question : ',
       parts,
@@ -88,8 +93,8 @@ function AddNode() {
   }
 
   const addSolution = () => {
-    var { start, ...params } = state
-    params.solutionId = new Date().getTime()
+    var { start, ...params } = nodeData
+    params.solutionId = id ? id : new Date().getTime()
     console.log('Ignoring attributes for Solution : ', start)
     console.log('Solution Details : ', { ...params })
     CreateSolution({
@@ -185,7 +190,7 @@ function AddNode() {
             <label>Space</label>
             <input id="txtSpace" name="space" type="text" onChange={update} />
           </div>
-          {state.type === 'Solution'
+          {nodeData.type === 'Solution'
             ? [
                 <div key="sol-1" className="row">
                   <label>Parts</label>
@@ -234,9 +239,9 @@ function AddNode() {
           size="small"
           startIcon={<PersonAdd />}
           onClick={() => {
-            if (state.type === 'Question') {
+            if (nodeData.type === 'Question') {
               addQuestion()
-            } else if (state.type === 'Solution') {
+            } else if (nodeData.type === 'Solution') {
               addSolution()
             }
           }}
