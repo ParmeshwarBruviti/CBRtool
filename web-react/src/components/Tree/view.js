@@ -237,13 +237,13 @@ function TreeView() {
         <div className="view">Getting Error</div>
       ) : graphData.nodes.length || graphData.edges.length ? (
         <div className="view">
-          <SubMenu className="menu" selectedMenu={selectedMenu} />
           <Graph
             className="right-panel"
             nodes={graphData.nodes}
             edges={graphData.edges}
             startNodeId={graphData.startNodeId}
           />
+          <SubMenu className="menu" selectedMenu={selectedMenu} />
         </div>
       ) : (
         <div className="view">Empty Data</div>

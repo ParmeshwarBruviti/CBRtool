@@ -13,8 +13,10 @@ import { useMutation } from '@apollo/react-hooks'
 import * as Utility from '../../../../common/utility'
 
 import {
-  ADD_QUE_QUE_EDGE_MUTATION,
-  ADD_QUE_SOL_EDGE_MUTATION,
+  // ADD_QUE_QUE_EDGE_MUTATION,
+  // ADD_QUE_SOL_EDGE_MUTATION,
+  MERGE_QUE_QUE_EDGE_MUTATION,
+  MERGE_QUE_SOL_EDGE_MUTATION,
   GET_ALL_NODES_EDGES,
   GET_IDS_Of_QUESTION_AND_SOLUTION,
 } from '../../../../queries'
@@ -38,8 +40,9 @@ function AddEdge() {
   const update = ({ target }) => {
     setState({ ...state, [target.name]: target.value.trim() })
   }
-  const [AddQuestionQuestionEdge] = useMutation(ADD_QUE_QUE_EDGE_MUTATION)
-  const [AddQuestionSolutionEdge] = useMutation(ADD_QUE_SOL_EDGE_MUTATION)
+
+  const [MergeQuestionQuestion_edges] = useMutation(MERGE_QUE_QUE_EDGE_MUTATION)
+  const [MergeQuestionSolution_edges] = useMutation(MERGE_QUE_SOL_EDGE_MUTATION)
 
   const addRelationEdge = () => {
     var { ...params } = state
@@ -48,7 +51,7 @@ function AddEdge() {
     params.end = params.to
 
     if (state.type === 'toQuestion') {
-      AddQuestionQuestionEdge({
+      MergeQuestionQuestion_edges({
         variables: {
           ...params,
         },
@@ -66,7 +69,7 @@ function AddEdge() {
           console.log('Err while adding edge : ', err)
         })
     } else {
-      AddQuestionSolutionEdge({
+      MergeQuestionSolution_edges({
         variables: {
           ...params,
         },
@@ -125,8 +128,7 @@ function AddEdge() {
                 {data.Question.map((q, index) => {
                   return (
                     <option key={index} value={q.questionId}>
-                      {' '}
-                      {q.questionId}{' '}
+                      {q.questionId}
                     </option>
                   )
                 })}
@@ -140,8 +142,7 @@ function AddEdge() {
                   {data.Solution.map((s, index) => {
                     return (
                       <option key={index} value={s.solutionId}>
-                        {' '}
-                        {s.solutionId}{' '}
+                        {s.solutionId}
                       </option>
                     )
                   })}
@@ -155,8 +156,7 @@ function AddEdge() {
                   {data.Question.map((q, index) => {
                     return (
                       <option key={index} value={q.questionId}>
-                        {' '}
-                        {q.questionId}{' '}
+                        {q.questionId}
                       </option>
                     )
                   })}

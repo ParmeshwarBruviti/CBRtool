@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { useHistory } from 'react-router-dom'
 
@@ -8,6 +8,7 @@ import style from './style'
 
 function Graph(props) {
   const history = useHistory()
+  const [className, setClassName] = useState('')
 
   let coreCy = null
 
@@ -16,6 +17,8 @@ function Graph(props) {
 
     if (cy) {
       cy.on('click tap', 'node', (e) => {
+        e.preventDefault()
+        e.stopPropagation()
         const node = e.target.id()
         const nodeDetails = props.nodes.find((n) => n.data.id === node)
         if (nodeDetails) {
@@ -32,6 +35,8 @@ function Graph(props) {
       })
 
       cy.on('click tap', 'edge', (e) => {
+        e.preventDefault()
+        e.stopPropagation()
         const edge = e.target.json().data
         if (edge) {
           history.push(
@@ -45,6 +50,21 @@ function Graph(props) {
           console.log('Not Found : ', edge)
         }
       })
+
+      // /*
+      // Cursor Pointer
+      cy.on('mouseover', 'node, edge', function (e) {
+        e.preventDefault()
+        e.stopPropagation()
+        setClassName('mouseover')
+      })
+
+      cy.on('mouseout', 'node, edge', function (e) {
+        e.preventDefault()
+        e.stopPropagation()
+        setClassName('')
+      })
+      // */
     }
   }, [props.nodes.length, props.edges.length])
 
@@ -58,7 +78,7 @@ function Graph(props) {
       cy={(cy) => {
         coreCy = cy
       }}
-      className={`graph ${props.className}`}
+      className={`graph ${props.className} ${className}`}
       elements={CytoscapeComponent.normalizeElements([
         ...props.nodes,
         ...props.edges,

@@ -33,17 +33,53 @@ function Attribute(props) {
 }
 
 const keyMapping = {
-  type: 'Type',
-  raw_content: 'Raw Content',
-  hint: 'Hint',
-  content: 'Content',
-  context: 'Context',
-  source_ref: 'Source Ref',
-  space: 'Space',
-  parts: 'Parts',
-  attachment_types: 'Attachment Types',
-  attachment_titles: 'Attachment Titles',
-  attachment_paths: 'Attachment Paths',
+  type: {
+    label: 'Type',
+    index: 1,
+  },
+  id: {
+    index: 0,
+  },
+  raw_content: {
+    label: 'Raw Content',
+    index: 2,
+  },
+  hint: {
+    label: 'Hint',
+    index: 3,
+  },
+  content: {
+    label: 'Content',
+    index: 4,
+  },
+  context: {
+    label: 'Context',
+    index: 5,
+  },
+  source_ref: {
+    label: 'Source Ref',
+    index: 6,
+  },
+  space: {
+    label: 'Space',
+    index: 7,
+  },
+  parts: {
+    label: 'Parts',
+    index: 8,
+  },
+  attachment_types: {
+    label: 'Attachment Types',
+    index: 9,
+  },
+  attachment_titles: {
+    label: 'Attachment Titles',
+    index: 10,
+  },
+  attachment_paths: {
+    label: 'Attachment Paths',
+    index: 11,
+  },
 }
 
 function ViewNode() {
@@ -70,28 +106,33 @@ function ViewNode() {
     } else {
       const resp = type === 'question' ? data.Question[0] : data.Solution[0]
       return resp
-        ? Object.keys(resp).reduce(
-            (accumulator, currentValue) => {
-              if (!keyMapping[currentValue]) return accumulator
-              return [
-                ...accumulator,
+        ? Object.keys(resp)
+            .reduce(
+              (accumulator, currentValue) => {
+                if (!keyMapping[currentValue]) return accumulator
+                return [
+                  ...accumulator,
+                  {
+                    label: keyMapping[currentValue].label,
+                    index: keyMapping[currentValue].index,
+                    value: resp[currentValue],
+                  },
+                ]
+              },
+              [
                 {
-                  label: keyMapping[currentValue],
-                  value: resp[currentValue],
+                  label: type === 'question' ? 'Question Id' : 'Solutioin Id',
+                  index: keyMapping['id'].index,
+                  value: resp.questionId || resp.solutionId,
+                },
+                {
+                  label: 'Type',
+                  index: keyMapping['type'].index,
+                  value: type,
                 },
               ]
-            },
-            [
-              {
-                label: type === 'question' ? 'Question Id' : 'Solutioin Id',
-                value: resp.questionId || resp.solutionId,
-              },
-              {
-                label: 'Type',
-                value: type,
-              },
-            ]
-          )
+            )
+            .sort((a, b) => a.index - b.index)
         : []
     }
   }
