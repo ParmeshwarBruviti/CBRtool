@@ -2,7 +2,7 @@ const gql = require('graphql-tag')
 import { Questions, Solutions, Answers } from './data'
 import { v4 as uuidv4 } from 'uuid'
 
-export const getSeedMutations = async () => {
+export const getSeedMutations = () => {
   const questions = Questions
   const solutions = Solutions
   const answers = Answers
