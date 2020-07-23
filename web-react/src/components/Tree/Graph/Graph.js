@@ -78,7 +78,6 @@ function Graph(props) {
     grid: true,
     avoidOverlap: true,
     nodeDimensionsIncludeLabels: true,
-    maximal: true,
     zoom: 0.09,
     spacingFactor: 3,
   }

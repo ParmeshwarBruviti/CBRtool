@@ -125,9 +125,17 @@ function AddEdge() {
               <label>From Question</label>
               <select id="optType" name="from" onChange={update} required>
                 <option value="">Please Select</option>
-                {data.Question.map((q, index) => {
+                {data.Question.sort(
+                  (a, b) => parseInt(a.questionId) - parseInt(b.questionId)
+                ).map((q, index) => {
                   return (
-                    <option key={index} value={q.questionId}>
+                    <option
+                      key={index}
+                      value={q.questionId}
+                      disabled={
+                        state.to === parseInt(q.questionId) ? true : false
+                      }
+                    >
                       {q.questionId}
                     </option>
                   )
@@ -139,9 +147,17 @@ function AddEdge() {
                 <label>To Solution</label>
                 <select id="optType" name="to" onChange={update} required>
                   <option value="">Please Select</option>
-                  {data.Solution.map((s, index) => {
+                  {data.Solution.sort(
+                    (a, b) => parseInt(a.solutionId) - parseInt(b.solutionId)
+                  ).map((s, index) => {
                     return (
-                      <option key={index} value={s.solutionId}>
+                      <option
+                        key={index}
+                        value={s.solutionId}
+                        disabled={
+                          state.from === parseInt(s.solutionId) ? true : false
+                        }
+                      >
                         {s.solutionId}
                       </option>
                     )
@@ -153,9 +169,17 @@ function AddEdge() {
                 <label>To Question</label>
                 <select id="optType" name="to" onChange={update} required>
                   <option value="">Please Select</option>
-                  {data.Question.map((q, index) => {
+                  {data.Question.sort(
+                    (a, b) => parseInt(a.questionId) - parseInt(b.questionId)
+                  ).map((q, index) => {
                     return (
-                      <option key={index} value={q.questionId}>
+                      <option
+                        key={index}
+                        value={q.questionId}
+                        disabled={
+                          state.from === parseInt(q.questionId) ? true : false
+                        }
+                      >
                         {q.questionId}
                       </option>
                     )

@@ -230,6 +230,11 @@ function ViewNode() {
                     aria-haspopup="true"
                     color="secondary"
                     size="small"
+                    disabled={
+                      type === 'question' && data && data.Question[0].start
+                        ? true
+                        : false
+                    }
                     onClick={() => {
                       deleteNode()
                     }}
