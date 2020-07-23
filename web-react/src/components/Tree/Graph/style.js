@@ -5,17 +5,17 @@ export default [
       label: 'data(id)',
       'font-family': 'Arial',
       'font-weight': 'bold',
-      'font-size': '5.2em',
+      'font-size': '8em',
 
       color: 'rgb(255,255,255)',
       'background-color': 'data(color)',
 
       'text-valign': 'center',
       'text-wrap': 'ellipsis',
-      'text-max-width': '290px',
+      'text-max-width': '350px',
 
-      width: '320px',
-      height: '320px',
+      width: '380px',
+      height: '380px',
     },
   },
   {

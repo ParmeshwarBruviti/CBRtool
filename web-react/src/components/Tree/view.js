@@ -123,6 +123,7 @@ function TreeView() {
       history.push('/tree/add-node', {
         start: !(graphData.nodes.length || 0),
         id: nextId,
+        nodeLength: graphData.nodes.length,
       })
     } else if (type === 'Add Edge') {
       history.push('/tree/add-edge')
@@ -231,23 +232,23 @@ function TreeView() {
 
   return (
     <div className="tree-view">
-      {loading ? (
-        <div className="view">Loading ...</div>
-      ) : error ? (
-        <div className="view">Getting Error</div>
-      ) : graphData.nodes.length || graphData.edges.length ? (
-        <div className="view">
+      <div className="view">
+        {loading ? (
+          <div className="view">Loading ...</div>
+        ) : error ? (
+          <div className="view">Getting Error</div>
+        ) : graphData.nodes.length || graphData.edges.length ? (
           <Graph
             className="right-panel"
             nodes={graphData.nodes}
             edges={graphData.edges}
             startNodeId={graphData.startNodeId}
           />
-          <SubMenu className="menu" selectedMenu={selectedMenu} />
-        </div>
-      ) : (
-        <div className="view">Empty Data</div>
-      )}
+        ) : (
+          <div className="right-panel empty">Empty Data</div>
+        )}
+        <SubMenu className="menu" selectedMenu={selectedMenu} />
+      </div>
       <SwipeableDrawer
         anchor="right"
         open={isDrawerOpen}

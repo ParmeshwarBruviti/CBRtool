@@ -1,6 +1,11 @@
 import React from 'react'
 
-import { Switch, Route, BrowserRouter as Router } from 'react-router-dom'
+import {
+  Switch,
+  Route,
+  Redirect,
+  BrowserRouter as Router,
+} from 'react-router-dom'
 
 import routes from './routes'
 
@@ -206,6 +211,9 @@ export default function App() {
           <div className={classes.appBarSpacer} />
           <Container maxWidth="lg" className={classes.container}>
             <Switch>
+              <Route exact path="/">
+                <Redirect to="/tree" />
+              </Route>
               {routes.map((route, i) => {
                 return <Route key={`route-${i}`} {...route} />
               })}

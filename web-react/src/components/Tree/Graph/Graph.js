@@ -71,6 +71,16 @@ function Graph(props) {
   const layout = {
     name: 'breadthfirst',
     roots: `#${props.startNodeId}`,
+    padding: 30,
+    directed: true,
+    circle: false,
+    fit: true,
+    grid: true,
+    avoidOverlap: true,
+    nodeDimensionsIncludeLabels: true,
+    maximal: true,
+    zoom: 0.09,
+    spacingFactor: 3,
   }
 
   return (
