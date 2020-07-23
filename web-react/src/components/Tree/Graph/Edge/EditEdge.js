@@ -206,6 +206,7 @@ function EditEdge() {
                 name="type"
                 defaultValue={edgeData.type}
                 onChange={update}
+                disabled={true}
                 required
               >
                 <option value="">Please Select</option>

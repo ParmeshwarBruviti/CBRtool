@@ -25,6 +25,17 @@
       &.mouseover {
         cursor: pointer;
       }
+      &.empty {
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        // text-shadow: 1px 1px 1px $bg-color;
+        font-family:Kondolar-Regular, Georgia, serif;
+        font-size: $default-font-size + 0.3em;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
     }
   }
 }

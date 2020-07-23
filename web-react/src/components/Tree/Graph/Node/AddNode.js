@@ -11,15 +11,14 @@ import { useMutation } from '@apollo/react-hooks'
 import {
   ADD_QUESTION_MUTATION,
   ADD_SOLUTION_MUTATION,
-} from '../../../../queries/node-queries'
-
-import { GET_ALL_NODES_EDGES } from '../../../../queries/custom-queries'
+  GET_ALL_NODES_EDGES,
+} from '../../../../queries'
 
 function AddNode() {
   const history = useHistory()
   const {
     location: {
-      state: { start, id },
+      state: { start, id, nodeLength },
     },
   } = history
   const [nodeData, setNodeData] = useState({
@@ -141,7 +140,12 @@ function AddNode() {
             <select id="optType" name="type" onChange={update} required>
               <option value="">Please Select</option>
               <option value="Question">Question</option>
-              <option value="Solution">Solution</option>
+              <option
+                value="Solution"
+                disabled={nodeLength === 0 ? true : false}
+              >
+                Solution
+              </option>
             </select>
           </div>
           <div className="row">
