@@ -230,11 +230,18 @@ function EditEdge() {
                     <option value="" key="-1">
                       Please Select
                     </option>,
-                    ...IdData.Question.map((q, index) => {
+                    ...IdData.Question.sort(
+                      (a, b) => parseInt(a.questionId) - parseInt(b.questionId)
+                    ).map((q, index) => {
                       return (
                         <option
                           key={index}
                           value={q.questionId.toString().trim()}
+                          disabled={
+                            edgeData.end === parseInt(q.questionId)
+                              ? true
+                              : false
+                          }
                         >
                           {q.questionId}
                         </option>
@@ -261,11 +268,19 @@ function EditEdge() {
                       <option value="" key="-1">
                         Please Select
                       </option>,
-                      ...IdData.Solution.map((s, index) => {
+                      ...IdData.Solution.sort(
+                        (a, b) =>
+                          parseInt(a.solutionId) - parseInt(b.solutionId)
+                      ).map((s, index) => {
                         return (
                           <option
                             key={index}
                             value={s.solutionId.toString().trim()}
+                            disabled={
+                              edgeData.start === parseInt(s.solutionId)
+                                ? true
+                                : false
+                            }
                           >
                             {s.solutionId}
                           </option>
@@ -292,11 +307,19 @@ function EditEdge() {
                       <option value="" key="-1">
                         Please Select
                       </option>,
-                      ...IdData.Question.map((q, index) => {
+                      ...IdData.Question.sort(
+                        (a, b) =>
+                          parseInt(a.questionId) - parseInt(b.questionId)
+                      ).map((q, index) => {
                         return (
                           <option
                             key={index}
                             value={q.questionId.toString().trim()}
+                            disabled={
+                              edgeData.start === parseInt(q.questionId)
+                                ? true
+                                : false
+                            }
                           >
                             {q.questionId}
                           </option>
