@@ -7,7 +7,10 @@ import routes from './routes'
 
 import { SwipeableDrawer, IconButton, Menu, MenuItem } from '@material-ui/core'
 
-import { AddCircleOutline as AddIcon } from '@material-ui/icons'
+import {
+  AddCircleOutline as AddIcon,
+  SettingsOutlined as SettingsIcon,
+} from '@material-ui/icons'
 
 // import { nodes, edges } from './Graph/sample-data'
 
@@ -74,9 +77,70 @@ function SubMenu(props) {
   )
 }
 
+const settings = ['Breath First Search', 'Circular']
+
+function SettingsMenu(props) {
+  const [anchorEl, setAnchorEl] = useState(null)
+  const open = Boolean(anchorEl)
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
+  const selectMenu = (type) => {
+    setAnchorEl(null)
+    props.selectedSettings({
+      layout: type,
+    })
+  }
+
+  return (
+    <div className={props.className}>
+      <IconButton
+        aria-label="more"
+        aria-controls="long-menu"
+        aria-haspopup="true"
+        size="medium"
+        onClick={handleClick}
+      >
+        <SettingsIcon />
+      </IconButton>
+      <Menu
+        id="long-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={open}
+        onClose={handleClose}
+        PaperProps={{
+          style: {
+            maxHeight: ITEM_HEIGHT * 4.5,
+            width: '20ch',
+          },
+        }}
+      >
+        {settings.map((option) => (
+          <MenuItem
+            key={option}
+            onClick={() => {
+              selectMenu(option)
+            }}
+          >
+            {option}
+          </MenuItem>
+        ))}
+      </Menu>
+    </div>
+  )
+}
+
 function TreeView() {
   const history = useHistory()
   const [isDrawerOpen, setDrwaerState] = useState(false)
+  const [settings, setSettings] = useState({})
   const [graphData, setGraphData] = useState({
     nodes: [],
     edges: [],
@@ -110,6 +174,12 @@ function TreeView() {
     if (!open) {
       history.push('/tree')
     }
+  }
+
+  const selectedSettings = (settings) => {
+    setSettings({
+      ...settings,
+    })
   }
 
   const selectedMenu = (open, type) => {
@@ -238,12 +308,21 @@ function TreeView() {
         ) : error ? (
           <div className="view">Getting Error</div>
         ) : graphData.nodes.length || graphData.edges.length ? (
-          <Graph
-            className="right-panel"
-            nodes={graphData.nodes}
-            edges={graphData.edges}
-            startNodeId={graphData.startNodeId}
-          />
+          [
+            <Graph
+              key="graph"
+              className="right-panel"
+              nodes={graphData.nodes}
+              edges={graphData.edges}
+              startNodeId={graphData.startNodeId}
+              settings={settings}
+            />,
+            <SettingsMenu
+              key="settings"
+              className="settings-menu"
+              selectedSettings={selectedSettings}
+            />,
+          ]
         ) : (
           <div className="right-panel empty">Empty Data</div>
         )}

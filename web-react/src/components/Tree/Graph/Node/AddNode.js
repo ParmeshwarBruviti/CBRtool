@@ -48,10 +48,10 @@ function AddNode() {
         'attachment_paths',
       ].indexOf(target.name) > -1
     ) {
-      const val = target.value.trim().split(',')
+      const val = target.value.split(',')
       setNodeData({ ...nodeData, [target.name]: val })
     } else {
-      setNodeData({ ...nodeData, [target.name]: target.value.trim() })
+      setNodeData({ ...nodeData, [target.name]: target.value })
     }
   }
 

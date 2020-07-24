@@ -8,6 +8,18 @@ import style from './style'
 
 function Graph(props) {
   const history = useHistory()
+  const [layout, setLayout] = useState({
+    name: 'breadthfirst',
+    roots: `#${props.startNodeId}`,
+    padding: 80,
+    directed: true,
+    circle: false,
+    fit: true,
+    grid: false,
+    avoidOverlap: true,
+    zoom: 0.09,
+    spacingFactor: 3.3,
+  })
   const [className, setClassName] = useState('')
 
   let coreCy = null
@@ -16,6 +28,7 @@ function Graph(props) {
     const cy = coreCy
 
     if (cy) {
+      cy.resize()
       cy.on('click tap', 'node', (e) => {
         e.preventDefault()
         e.stopPropagation()
@@ -68,19 +81,21 @@ function Graph(props) {
     }
   }, [props.nodes.length, props.edges.length])
 
-  const layout = {
-    name: 'breadthfirst',
-    roots: `#${props.startNodeId}`,
-    padding: 30,
-    directed: true,
-    circle: false,
-    fit: true,
-    grid: true,
-    avoidOverlap: true,
-    nodeDimensionsIncludeLabels: true,
-    zoom: 0.09,
-    spacingFactor: 3,
-  }
+  useEffect(() => {
+    if (props.settings.layout === 'Circular') {
+      setLayout({
+        ...layout,
+        circle: true,
+        zoom: 0.03,
+      })
+    } else if (props.settings.layout === 'Breath First Search') {
+      setLayout({
+        ...layout,
+        circle: false,
+        zoom: 0.09,
+      })
+    }
+  }, [props.settings])
 
   return (
     <CytoscapeComponent

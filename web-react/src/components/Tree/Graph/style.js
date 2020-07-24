@@ -5,17 +5,17 @@ export default [
       label: 'data(id)',
       'font-family': 'Arial',
       'font-weight': 'bold',
-      'font-size': '8em',
+      'font-size': '8.5em',
 
       color: 'rgb(255,255,255)',
       'background-color': 'data(color)',
 
       'text-valign': 'center',
       'text-wrap': 'ellipsis',
-      'text-max-width': '350px',
+      'text-max-width': '380px',
 
-      width: '380px',
-      height: '380px',
+      width: '420px',
+      height: '420px',
     },
   },
   {
@@ -30,9 +30,10 @@ export default [
   {
     selector: 'edge',
     style: {
-      width: '7px',
+      width: '10px',
 
-      'arrow-scale': '2',
+      // 'line-color': '#abb1bb',
+      'arrow-scale': '3.1',
       'curve-style': 'bezier',
       'target-arrow-shape': 'triangle',
     },
