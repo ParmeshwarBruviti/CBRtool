@@ -12,7 +12,6 @@ function Graph(props) {
     name: 'breadthfirst',
     roots: `#${props.startNodeId}`,
     padding: 80,
-    directed: true,
     circle: false,
     fit: true,
     grid: false,

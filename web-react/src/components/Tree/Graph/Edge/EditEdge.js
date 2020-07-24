@@ -56,7 +56,7 @@ function EditEdge() {
   }, [edgeDetailsData])
 
   const update = ({ target }) => {
-    setEdgeData({ ...edgeData, [target.name]: target.value })
+    setEdgeData({ ...edgeData, [target.name]: target.value.trim() })
   }
 
   const [MergeQuestionQuestion_edges] = useMutation(MERGE_QUE_QUE_EDGE_MUTATION)
@@ -75,17 +75,20 @@ function EditEdge() {
       variables: {
         ...params,
       },
-      refetchQueries: [
-        {
-          query: GET_ALL_NODES_EDGES,
-        },
-        {
-          query: GET_EDGE,
-          variables: {
-            id,
-          },
-        },
-      ],
+      refetchQueries:
+        data.start === edgeData.start && data.end === edgeData.end
+          ? [
+              {
+                query: GET_EDGE,
+                variables: {
+                  id,
+                },
+              },
+              {
+                query: GET_ALL_NODES_EDGES,
+              },
+            ]
+          : [],
     })
       .then((res) => {
         if (data.start !== edgeData.start || data.end !== edgeData.end) {
@@ -109,14 +112,20 @@ function EditEdge() {
       variables: {
         ...params,
       },
-      refetchQueries: [
-        {
-          query: GET_EDGE,
-          variables: {
-            id,
-          },
-        },
-      ],
+      refetchQueries:
+        data.start === edgeData.start && data.end === edgeData.end
+          ? [
+              {
+                query: GET_EDGE,
+                variables: {
+                  id,
+                },
+              },
+              {
+                query: GET_ALL_NODES_EDGES,
+              },
+            ]
+          : [],
     })
       .then((res) => {
         if (data.start !== edgeData.start || data.end !== edgeData.end) {
@@ -138,6 +147,12 @@ function EditEdge() {
       },
       refetchQueries: [
         {
+          query: GET_EDGE,
+          variables: {
+            id,
+          },
+        },
+        {
           query: GET_ALL_NODES_EDGES,
         },
       ],
@@ -153,6 +168,12 @@ function EditEdge() {
         toSolutionId: data.end,
       },
       refetchQueries: [
+        {
+          query: GET_EDGE,
+          variables: {
+            id,
+          },
+        },
         {
           query: GET_ALL_NODES_EDGES,
         },
@@ -238,7 +259,7 @@ function EditEdge() {
                           key={index}
                           value={q.questionId.toString().trim()}
                           disabled={
-                            parseInt(edgeData.end) === parseInt(q.questionId)
+                            edgeData.end === parseInt(q.questionId)
                               ? true
                               : false
                           }
@@ -277,8 +298,7 @@ function EditEdge() {
                             key={index}
                             value={s.solutionId.toString().trim()}
                             disabled={
-                              parseInt(edgeData.start) ===
-                              parseInt(s.solutionId)
+                              edgeData.start === parseInt(s.solutionId)
                                 ? true
                                 : false
                             }
@@ -317,8 +337,7 @@ function EditEdge() {
                             key={index}
                             value={q.questionId.toString().trim()}
                             disabled={
-                              parseInt(edgeData.start) ===
-                              parseInt(q.questionId)
+                              edgeData.start === parseInt(q.questionId)
                                 ? true
                                 : false
                             }

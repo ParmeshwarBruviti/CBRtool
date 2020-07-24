@@ -12,6 +12,7 @@ import {
   ADD_QUESTION_MUTATION,
   ADD_SOLUTION_MUTATION,
   GET_ALL_NODES_EDGES,
+  GET_IDS_Of_QUESTION_AND_SOLUTION,
 } from '../../../../queries'
 
 function AddNode() {
@@ -80,6 +81,9 @@ function AddNode() {
         {
           query: GET_ALL_NODES_EDGES,
         },
+        {
+          query: GET_IDS_Of_QUESTION_AND_SOLUTION,
+        },
       ],
     })
       .then((res) => {
@@ -103,6 +107,9 @@ function AddNode() {
       refetchQueries: [
         {
           query: GET_ALL_NODES_EDGES,
+        },
+        {
+          query: GET_IDS_Of_QUESTION_AND_SOLUTION,
         },
       ],
     })
