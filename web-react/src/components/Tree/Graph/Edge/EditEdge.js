@@ -259,7 +259,7 @@ function EditEdge() {
                           key={index}
                           value={q.questionId.toString().trim()}
                           disabled={
-                            edgeData.end === parseInt(q.questionId)
+                            parseInt(edgeData.end) === parseInt(q.questionId)
                               ? true
                               : false
                           }
@@ -298,7 +298,8 @@ function EditEdge() {
                             key={index}
                             value={s.solutionId.toString().trim()}
                             disabled={
-                              edgeData.start === parseInt(s.solutionId)
+                              parseInt(edgeData.start) ===
+                              parseInt(s.solutionId)
                                 ? true
                                 : false
                             }
@@ -337,7 +338,8 @@ function EditEdge() {
                             key={index}
                             value={q.questionId.toString().trim()}
                             disabled={
-                              edgeData.start === parseInt(q.questionId)
+                              parseInt(edgeData.start) ===
+                              parseInt(q.questionId)
                                 ? true
                                 : false
                             }
