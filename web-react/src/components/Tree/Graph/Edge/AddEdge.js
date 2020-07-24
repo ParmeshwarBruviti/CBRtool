@@ -38,7 +38,7 @@ function AddEdge() {
   })
 
   const update = ({ target }) => {
-    setState({ ...state, [target.name]: target.value.trim() })
+    setState({ ...state, [target.name]: target.value })
   }
 
   const [MergeQuestionQuestion_edges] = useMutation(MERGE_QUE_QUE_EDGE_MUTATION)
@@ -133,7 +133,9 @@ function AddEdge() {
                       key={index}
                       value={q.questionId}
                       disabled={
-                        state.to === parseInt(q.questionId) ? true : false
+                        parseInt(state.to) === parseInt(q.questionId)
+                          ? true
+                          : false
                       }
                     >
                       {q.questionId}
@@ -155,7 +157,9 @@ function AddEdge() {
                         key={index}
                         value={s.solutionId}
                         disabled={
-                          state.from === parseInt(s.solutionId) ? true : false
+                          parseInt(state.from) === parseInt(s.solutionId)
+                            ? true
+                            : false
                         }
                       >
                         {s.solutionId}
@@ -177,7 +181,9 @@ function AddEdge() {
                         key={index}
                         value={q.questionId}
                         disabled={
-                          state.from === parseInt(q.questionId) ? true : false
+                          parseInt(state.from) === parseInt(q.questionId)
+                            ? true
+                            : false
                         }
                       >
                         {q.questionId}

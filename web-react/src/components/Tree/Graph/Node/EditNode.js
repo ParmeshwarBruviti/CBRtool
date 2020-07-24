@@ -67,10 +67,10 @@ function EditNode() {
       ].indexOf(target.name) > -1
     ) {
       // const val = target.value.trim().split(',')
-      const val = target.value.trim().toString()
+      const val = target.value.toString()
       setState({ ...state, [target.name]: val })
     } else {
-      setState({ ...state, [target.name]: target.value.trim() })
+      setState({ ...state, [target.name]: target.value })
     }
   }
 

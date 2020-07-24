@@ -56,7 +56,7 @@ function EditEdge() {
   }, [edgeDetailsData])
 
   const update = ({ target }) => {
-    setEdgeData({ ...edgeData, [target.name]: target.value.trim() })
+    setEdgeData({ ...edgeData, [target.name]: target.value })
   }
 
   const [MergeQuestionQuestion_edges] = useMutation(MERGE_QUE_QUE_EDGE_MUTATION)
@@ -238,7 +238,7 @@ function EditEdge() {
                           key={index}
                           value={q.questionId.toString().trim()}
                           disabled={
-                            edgeData.end === parseInt(q.questionId)
+                            parseInt(edgeData.end) === parseInt(q.questionId)
                               ? true
                               : false
                           }
@@ -277,7 +277,8 @@ function EditEdge() {
                             key={index}
                             value={s.solutionId.toString().trim()}
                             disabled={
-                              edgeData.start === parseInt(s.solutionId)
+                              parseInt(edgeData.start) ===
+                              parseInt(s.solutionId)
                                 ? true
                                 : false
                             }
@@ -316,7 +317,8 @@ function EditEdge() {
                             key={index}
                             value={q.questionId.toString().trim()}
                             disabled={
-                              edgeData.start === parseInt(q.questionId)
+                              parseInt(edgeData.start) ===
+                              parseInt(q.questionId)
                                 ? true
                                 : false
                             }
