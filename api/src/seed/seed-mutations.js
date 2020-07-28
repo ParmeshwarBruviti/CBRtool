@@ -1,19 +1,22 @@
 const gql = require('graphql-tag')
-import { Questions, Solutions, Answers } from './data'
+import { Questions } from './questions'
+import { Solutions } from './solutions'
+import { Answers } from './answers'
 import { v4 as uuidv4 } from 'uuid'
 
 export const getSeedMutations = () => {
   const questions = Questions
+  console.log('questions :', questions.length)
   const solutions = Solutions
+  console.log('solutions :', solutions.length)
   const answers = Answers
+  console.log('answers :', answers.length)
   const mutations = generateNewMutations(questions, solutions, answers)
   return mutations
 }
 
 const generateNewMutations = (questions, solutions, answers) => {
-  console.log('questions :', questions.length)
-  console.log('solutions :', solutions.length)
-  console.log('answers :', answers.length)
+ 
   const questionMutations = getQuestionMutations(questions)
   const solutionMutations = getSolutionMutation(solutions)
   const answerMutations = getAnswerMutations(answers)
@@ -25,7 +28,7 @@ const generateNewMutations = (questions, solutions, answers) => {
 
 const getQuestionMutations = (questions) => {
   return questions.map((que) => {
-    let queNode = que.n
+    let queNode = que.q
     let attributes = queNode.properties
     let questionId = queNode.identity
     let start = attributes.start ? attributes.start : false
@@ -93,7 +96,7 @@ const getQuestionMutations = (questions) => {
  */
 const getSolutionMutation = (solutions) => {
   return solutions.map((sol) => {
-    let solNode = sol.n
+    let solNode = sol.q
     let attributes = solNode.properties
     let solutionId = solNode.identity
     let context = attributes.context ? attributes.context : ''
@@ -176,7 +179,7 @@ const getSolutionMutation = (solutions) => {
  */
 const getAnswerMutations = (answers) => {
   return answers.map((ans) => {
-    let ansEdge = ans.r
+    let ansEdge = ans.e
     let attributes = ansEdge.properties
     let answerId = uuidv4()
     let start = ansEdge.start

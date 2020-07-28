@@ -56,7 +56,7 @@ function EditEdge() {
   }, [edgeDetailsData])
 
   const update = ({ target }) => {
-    setEdgeData({ ...edgeData, [target.name]: target.value.trim() })
+    setEdgeData({ ...edgeData, [target.name]: target.value })
   }
 
   const [MergeQuestionQuestion_edges] = useMutation(MERGE_QUE_QUE_EDGE_MUTATION)
