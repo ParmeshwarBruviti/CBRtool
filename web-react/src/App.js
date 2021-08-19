@@ -143,6 +143,8 @@ export default function App() {
     setOpen(false)
   }
 
+  console.log("Open - ", open)
+
   return (
     <Router>
       <div className={classes.root}>
